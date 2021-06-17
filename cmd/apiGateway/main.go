@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"go-api/internel/userService/person/Person"
+	"github.com/ronnielin8862/go-api/internel/userService/person"
 
 	"github.com/gorilla/mux"
 )
@@ -22,7 +22,7 @@ import (
 // 	Province string `json:"province,omitempty"`
 // }
 
-var people []Person.Person
+var people []person.Person
 
 func GetPerson(w http.ResponseWriter, req *http.Request) {
 	params := mux.Vars(req)
@@ -41,7 +41,7 @@ func GetPeople(w http.ResponseWriter, req *http.Request) {
 
 func PostPerson(w http.ResponseWriter, req *http.Request) {
 	params := mux.Vars(req)
-	var person Person.Person
+	var person person.Person
 	_ = json.NewDecoder(req.Body).Decode(&person)
 	person.ID = params["id"]
 	people = append(people, person)
