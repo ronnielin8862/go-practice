@@ -5,7 +5,9 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/ronnielin8862/go-api/internel/userService/person"
+	"github.com/ronnielin8862/go-api/internel/userService"
+
+	// "go-api/internel/userService"
 
 	"github.com/gorilla/mux"
 )
@@ -22,7 +24,7 @@ import (
 // 	Province string `json:"province,omitempty"`
 // }
 
-var people []person.Person
+var people []userService.Person
 
 func GetPerson(w http.ResponseWriter, req *http.Request) {
 	params := mux.Vars(req)
@@ -41,7 +43,7 @@ func GetPeople(w http.ResponseWriter, req *http.Request) {
 
 func PostPerson(w http.ResponseWriter, req *http.Request) {
 	params := mux.Vars(req)
-	var person person.Person
+	var person userService.Person
 	_ = json.NewDecoder(req.Body).Decode(&person)
 	person.ID = params["id"]
 	people = append(people, person)
@@ -61,8 +63,8 @@ func DeletePerson(w http.ResponseWriter, req *http.Request) {
 
 func main() {
 	router := mux.NewRouter()
-	people = append(people, Person.Person{ID: "1", Firstname: "xi", Lastname: "dada", Address: &Address{City: "Shenyang", Province: "Liaoning"}})
-	people = append(people, Person.Person{ID: "2", Firstname: "li", Lastname: "xiansheng", Address: &Address{City: "Changchun", Province: "Jinlin"}})
+	people = append(people, userService.Person{ID: "1", Firstname: "xi", Lastname: "dada", Address: &userService.Address{City: "Shenyang", Province: "Liaoning"}})
+	people = append(people, userService.Person{ID: "2", Firstname: "li", Lastname: "xiansheng", Address: &userService.Address{City: "Changchun", Province: "Jinlin"}})
 	router.HandleFunc("/people", GetPeople).Methods("GET")
 	router.HandleFunc("/people/{id}", GetPerson).Methods("GET")
 	router.HandleFunc("/people/{id}", PostPerson).Methods("POST")
