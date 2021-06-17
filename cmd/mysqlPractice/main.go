@@ -12,10 +12,6 @@ import (
 func main() {
 
 	EMPNO, ENAME, JOB, DEPTNO := 555, "第5個", "NO5", 5
-	// var EMPNO int16 = 333
-	// var ENAME string = "第3個"
-	// var JOB string = "NO3"
-	// var DEPTNO int16 = 3
 
 	InsertEMP(&EMPNO, ENAME, JOB, DEPTNO)
 
@@ -45,7 +41,7 @@ func InsertEMP(EMPNO *int, ENAME string, JOB string, DEPTNO int) {
 	fmt.Println(affect)
 
 	db.Close()
-	fmt.Print("關閉36")
+	fmt.Print("正常關閉")
 }
 
 func checkErr(err error, db *sql.DB) {
@@ -53,7 +49,7 @@ func checkErr(err error, db *sql.DB) {
 
 		defer func() {
 			db.Close()
-			fmt.Print("關閉47")
+			fmt.Print("異常關閉")
 		}()
 
 		fmt.Print(err.Error())
