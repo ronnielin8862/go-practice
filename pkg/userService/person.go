@@ -1,4 +1,4 @@
-package person
+package userService
 
 type Person struct {
 	ID        string   `json:"id,omitemty"`

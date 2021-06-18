@@ -5,26 +5,13 @@ import (
 	"log"
 	"net/http"
 
-	// "github.com/ronnielin8862/go-api/pkg/userService"
-
-	// "go-api/internel/userService"
+	"github.com/ronnielin8862/go-api/pkg/userService"
 
 	"github.com/gorilla/mux"
 )
 
-type Person struct {
-	ID        string   `json:"id,omitemty"`
-	Firstname string   `json:"firstname,omitempty"`
-	Lastname  string   `json:"lastname,omitempty"`
-	Address   *Address `json:"address,omitempty"`
-}
-
-type Address struct {
-	City     string `json:"city,omitempty"`
-	Province string `json:"province,omitempty"`
-}
-
-var people []Person
+var people []userService.Person
+var Address []userService.Address
 
 func GetPerson(w http.ResponseWriter, req *http.Request) {
 	params := mux.Vars(req)
@@ -43,7 +30,7 @@ func GetPeople(w http.ResponseWriter, req *http.Request) {
 
 func PostPerson(w http.ResponseWriter, req *http.Request) {
 	params := mux.Vars(req)
-	var person Person
+	var person userService.Person
 	_ = json.NewDecoder(req.Body).Decode(&person)
 	person.ID = params["id"]
 	people = append(people, person)
@@ -63,8 +50,8 @@ func DeletePerson(w http.ResponseWriter, req *http.Request) {
 
 func main() {
 	router := mux.NewRouter()
-	people = append(people, Person{ID: "1", Firstname: "xi", Lastname: "dada", Address: &Address{City: "Shenyang", Province: "Liaoning"}})
-	people = append(people, Person{ID: "2", Firstname: "li", Lastname: "xiansheng", Address: &Address{City: "Changchun", Province: "Jinlin"}})
+	people = append(people, userService.Person{ID: "1", Firstname: "xi", Lastname: "dada", Address: &userService.Address{City: "Shenyang", Province: "Liaoning"}})
+	people = append(people, userService.Person{ID: "2", Firstname: "li", Lastname: "xiansheng", Address: &userService.Address{City: "Changchun", Province: "Jinlin"}})
 	router.HandleFunc("/people", GetPeople).Methods("GET")
 	router.HandleFunc("/people/{id}", GetPerson).Methods("GET")
 	router.HandleFunc("/people/{id}", PostPerson).Methods("POST")
