@@ -12,17 +12,22 @@ func init() {
 }
 
 func GetMethod(c *gin.Context) {
-	fmt.Print("進入Get")
+	fmt.Println("進入Get")
 
-	// c.Params()
-	c.String(http.StatusOK, "Get完成")
+	name := c.DefaultQuery("name", "沒輸入姓名")
+	old := c.DefaultQuery("old", "沒輸入年齡")
+
+	fmt.Println("name ============ " + name)
+	fmt.Println("old ============ " + old)
+
+	c.String(http.StatusOK, "Get完成, name = "+name+", old = "+old)
 
 }
 
 func main() {
 	server := gin.Default()
 
-	server.GET("/", GetMethod)
+	server.GET("/get", GetMethod)
 
 	server.Run(":3000")
 
