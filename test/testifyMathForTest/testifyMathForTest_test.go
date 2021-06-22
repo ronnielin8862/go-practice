@@ -1,4 +1,4 @@
-package main
+package testifyMathForTest
 
 import (
 	"fmt"
