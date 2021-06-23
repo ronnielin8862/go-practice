@@ -12,18 +12,27 @@ import (
 var log = logrus.New()
 
 func init() {
-	// 设置日志格式为json格式
+	// 設置日誌格式為json格式, or  test格式
 	log.SetFormatter(&logrus.TextFormatter{})
 
 	// 设置将日志输出到标准输出（默认的输出为stderr,标准错误）
 	// 日志消息输出可以是任意的io.writer类型
 	log.SetOutput(os.Stdout)
 
-	// 设置日志级别为warn以上
+	// 設置級別
 	log.SetLevel(logrus.DebugLevel)
 }
 
 func main() {
+
+	f, err := os.OpenFile("logfile.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+
+	if err != nil {
+		log.Fatalf("file open error : %v", err)
+	}
+
+	defer f.Close()
+	log.SetOutput(f)
 
 	log.Info("開始測試insert DB")
 
@@ -35,6 +44,7 @@ func main() {
 		"DEPTNO ": DEPTNO,
 	}).Debug("不錯喔")
 
+	//也可以這樣直接使用，但是遇到需要呈現某些值的時候，推薦withfield
 	log.Debug("測試不使用WithFields")
 
 	InsertEMP(&EMPNO, ENAME, JOB, DEPTNO)
