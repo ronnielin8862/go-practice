@@ -12,15 +12,28 @@ import (
 var log = logrus.New()
 
 func init() {
-	// 設置日誌格式為json格式, or  test格式
+	// 設置日誌格式為test格式
 	log.SetFormatter(&logrus.TextFormatter{})
 
-	// 设置将日志输出到标准输出（默认的输出为stderr,标准错误）
-	// 日志消息输出可以是任意的io.writer类型
+	// 設置日誌標準輸出（默认的输出为stderr,标准错误）
 	log.SetOutput(os.Stdout)
 
 	// 設置級別
 	log.SetLevel(logrus.DebugLevel)
+}
+
+type Emp struct {
+	Empno  uint16
+	Ename  string
+	Job    string
+	Deptno uint16
+}
+
+type EmpTest struct {
+	Empno  uint16
+	Ename  string
+	Job    string
+	Deptno uint16
 }
 
 func main() {
@@ -36,22 +49,42 @@ func main() {
 
 	log.Info("開始測試insert DB")
 
-	EMPNO, ENAME, JOB, DEPTNO := 111, "第1個", "NO1", 1
+	// EMPNO, ENAME, JOB, DEPTNO := 111, "第1個", "NO1", 1
+	var emp Emp
 
-	log.WithFields(logrus.Fields{"傳入內容 EMPNO ": EMPNO,
-		"ENAME ":  ENAME,
-		"JOB ":    JOB,
-		"DEPTNO ": DEPTNO,
+	empData := emp.DataProcessing()
+
+	log.WithFields(logrus.Fields{"傳入內容 EMPNO ": empData.Empno,
+		"ENAME ":  empData.Ename,
+		"JOB ":    empData.Job,
+		"DEPTNO ": empData.Deptno,
 	}).Debug("不錯喔")
 
 	//也可以這樣直接使用，但是遇到需要呈現某些值的時候，推薦withfield
 	log.Debug("測試不使用WithFields")
 
-	InsertEMP(&EMPNO, ENAME, JOB, DEPTNO)
+	InsertEMP(&empData.Empno, empData.Ename, empData.Job, empData.Deptno)
 
 }
 
-func InsertEMP(EMPNO *int, ENAME string, JOB string, DEPTNO int) {
+func (emp *Emp) DataProcessing() (empData *Emp) {
+
+	emp.Empno = 111
+	emp.Ename = "第1個"
+	emp.Job = "No1"
+	emp.Deptno = 111
+
+	test := new(EmpTest)
+
+	test.Deptno = 111
+
+	// empTest := new(empTest)
+
+	return emp
+
+}
+
+func InsertEMP(EMPNO *uint16, ENAME string, JOB string, DEPTNO uint16) {
 	db, err := sql.Open("mysql", "root:my-password@/test")
 	checkErr(err, db)
 
