@@ -3,15 +3,39 @@ package main
 import (
 	"database/sql"
 	"fmt"
-
-	//"time"
+	"os"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/sirupsen/logrus"
 )
+
+var log = logrus.New()
+
+func init() {
+	// 设置日志格式为json格式
+	log.SetFormatter(&logrus.TextFormatter{})
+
+	// 设置将日志输出到标准输出（默认的输出为stderr,标准错误）
+	// 日志消息输出可以是任意的io.writer类型
+	log.SetOutput(os.Stdout)
+
+	// 设置日志级别为warn以上
+	log.SetLevel(logrus.DebugLevel)
+}
 
 func main() {
 
-	EMPNO, ENAME, JOB, DEPTNO := 555, "第5個", "NO5", 5
+	log.Info("開始測試insert DB")
+
+	EMPNO, ENAME, JOB, DEPTNO := 111, "第1個", "NO1", 1
+
+	log.WithFields(logrus.Fields{"傳入內容 EMPNO ": EMPNO,
+		"ENAME ":  ENAME,
+		"JOB ":    JOB,
+		"DEPTNO ": DEPTNO,
+	}).Debug("不錯喔")
+
+	log.Debug("測試不使用WithFields")
 
 	InsertEMP(&EMPNO, ENAME, JOB, DEPTNO)
 
