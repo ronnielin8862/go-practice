@@ -13,8 +13,8 @@ func say(s string) {
 }
 
 //要主執行緒等待gorountine跑完才結束的三種方法
-
 // 1. 指定等待時間
+
 func main() {
 	go say("hello")
 	say("world")

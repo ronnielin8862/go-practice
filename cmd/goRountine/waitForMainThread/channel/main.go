@@ -14,6 +14,8 @@ func say(s string, ch chan<- string) {
 	ch <- s
 }
 
+//要主執行緒等待gorountine跑完才結束的三種方法
+// 3. channel
 func main() {
 	ch := make(chan string)
 

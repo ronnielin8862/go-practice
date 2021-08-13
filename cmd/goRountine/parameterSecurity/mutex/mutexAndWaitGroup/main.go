@@ -25,7 +25,9 @@ func addByShareMemory(n int) []int {
 }
 
 func main() {
+
 	foo := addByShareMemory(10)
 	fmt.Println(len(foo))
 	fmt.Println(foo)
+
 }

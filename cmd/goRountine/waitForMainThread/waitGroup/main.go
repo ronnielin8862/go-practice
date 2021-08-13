@@ -15,6 +15,8 @@ func say(s string, wg *sync.WaitGroup) {
 	}
 }
 
+//要主執行緒等待gorountine跑完才結束的三種方法
+// 2. sync.waitGroup
 func main() {
 	wg := new(sync.WaitGroup)
 
