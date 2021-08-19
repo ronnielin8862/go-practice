@@ -17,5 +17,4 @@ jobs:
         aws-region: us-east-2
     - name: run list test
       id: QQ
-      run: |
-        aws s3 ls && echo "ttttt"
+      run: aws s3 ls
