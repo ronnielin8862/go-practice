@@ -24,7 +24,7 @@ func main() {
 	)
 
 	NewBlockchain := bc.CreateBlockchain() // 新增一個區塊鏈
-	for true {
+	for {
 		fmt.Scanln(&op)
 		if op == "h" {
 			fmt.Println("Printing the help")

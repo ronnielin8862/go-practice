@@ -1,4 +1,5 @@
-package practice1
+// Deprecated: 測試失敗，沒屌用的學習文章
+package createConn
 
 import (
 	"context"
@@ -10,12 +11,14 @@ import (
 )
 
 // Client defines typed wrappers for the Ethereum RPC API.
+// Deprecated: 測試失敗，沒屌用的學習文章
 type Client struct {
 	rpcClient *rpc.Client
 	EthClient *ethclient.Client
 }
 
 // Connect creates a client that uses the given host.
+// Deprecated: 測試失敗，沒屌用的學習文章
 func Connect(host string) (*Client, error) {
 	rpcClient, err := rpc.Dial(host)
 	if err != nil {
@@ -26,6 +29,7 @@ func Connect(host string) (*Client, error) {
 }
 
 // GetBlockNumber returns the block number.
+// Deprecated: 測試失敗，沒屌用的學習文章
 func (ec *Client) GetBlockNumber(ctx context.Context) (*big.Int, error) {
 	var result hexutil.Big
 	err := ec.rpcClient.CallContext(ctx, &result, "eth_blockNumber")
