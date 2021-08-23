@@ -1,10 +1,11 @@
+// Deprecated: 測試失敗，沒屌用的學習文章
 package main
 
 import (
 	"context"
 	"fmt"
 
-	"github.com/ronnielin8862/go-api/pkg/blockChain/createConn"
+	createConn "github.com/ronnielin8862/go-api/pkg/blockChain/practice1"
 )
 
 // Deprecated: 測試失敗，沒屌用的學習文章
