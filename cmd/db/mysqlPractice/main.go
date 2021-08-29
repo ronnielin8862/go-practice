@@ -85,7 +85,7 @@ func (emp *Emp) DataProcessing() (empData *Emp) {
 }
 
 func InsertEMP(EMPNO *uint16, ENAME string, JOB string, DEPTNO uint16) {
-	db, err := sql.Open("mysql", "root:my-password@/test")
+	db, err := sql.Open("mysql", "root:my-password@/test") //user:password@/dbname
 	checkErr(err, db)
 
 	//插入資料

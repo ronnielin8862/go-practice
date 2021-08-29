@@ -15,6 +15,7 @@
 # vendor/
 
 ./go.mod
+.github/*
 
 ##ide setting
 .vscode/
