@@ -1,0 +1,12 @@
+time="2021-06-23T17:15:41+08:00" level=info msg="開始測試insert DB"
+time="2021-06-23T17:15:41+08:00" level=debug msg="不錯喔" DEPTNO =0 ENAME ="第0個" JOB =NO0 傳入內容 EMPNO =0
+time="2021-06-23T17:15:41+08:00" level=debug msg="測試不使用WithFields"
+time="2021-06-23T17:17:41+08:00" level=info msg="開始測試insert DB"
+time="2021-06-23T17:17:41+08:00" level=debug msg="不錯喔" DEPTNO =1 ENAME ="第1個" JOB =NO1 傳入內容 EMPNO =111
+time="2021-06-23T17:17:41+08:00" level=debug msg="測試不使用WithFields"
+time="2021-06-23T22:48:07+08:00" level=info msg="開始測試insert DB"
+time="2021-06-23T22:48:07+08:00" level=debug msg="不錯喔" DEPTNO =111 ENAME ="第1個" JOB =No1 傳入內容 EMPNO =0
+time="2021-06-23T22:48:07+08:00" level=debug msg="測試不使用WithFields"
+time="2021-06-23T22:49:37+08:00" level=info msg="開始測試insert DB"
+time="2021-06-23T22:49:37+08:00" level=debug msg="不錯喔" DEPTNO =111 ENAME ="第1個" JOB =No1 傳入內容 EMPNO =111
+time="2021-06-23T22:49:37+08:00" level=debug msg="測試不使用WithFields"
