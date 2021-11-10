@@ -4,7 +4,7 @@
 // 	protoc        v3.17.3
 // source: proto3.proto
 
-package helloWorld
+package unary
 
 import (
 	context "context"

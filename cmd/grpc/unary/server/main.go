@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
-	calculatorPB "github.com/ronnielin8862/go-api/api/grpc/helloWorld"
+	calculatorPB "github.com/ronnielin8862/go-api/api/grpc/unary"
 	"google.golang.org/grpc"
 	"log"
 	"net"
