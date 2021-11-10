@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package clientStreamData;
+option go_package = "client/side";
+
+service StreamService {
+  rpc FetchResponse (stream Request) returns (Response) {}
+}
+
+message Request {
+  int32 id = 1;
+}
+
+message Response {
+  string result = 1;
+}
