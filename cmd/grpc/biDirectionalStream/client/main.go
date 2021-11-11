@@ -31,7 +31,7 @@ func main() {
 
 	stream.Send(&pb.Request{Id: id, Name: name})
 	go func() {
-		for i := 0 ; i < 5; i++{
+		for i := 0 ; i < 4; i++{
 			resp, err := stream.Recv()
 			if err == io.EOF {
 				fmt.Println("進入EOF")
@@ -47,6 +47,7 @@ func main() {
 			name = name + "小天才?"
 
 			stream.Send(&pb.Request{Id: id , Name: name})
+			time.Sleep(time.Second *2 )
 		}
 		fmt.Println("該結束囉")
 		if err := stream.CloseSend(); err != nil {
