@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/ronnielin8862/go-api/pkg/userService"
+	"github.com/ronnielin8862/go-practice/pkg/userService"
 
 	"github.com/gorilla/mux"
 )

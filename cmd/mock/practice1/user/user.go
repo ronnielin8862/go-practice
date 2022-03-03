@@ -1,6 +1,6 @@
 package user
 
-import "github.com/ronnielin8862/go-api/cmd/mock/practice1/person"
+import "github.com/ronnielin8862/go-practice/cmd/mock/practice1/person"
 
 type User struct {
 	Person person.Male

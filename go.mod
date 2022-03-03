@@ -1,4 +1,4 @@
-module github.com/ronnielin8862/go-api
+module github.com/ronnielin8862/go-practice
 
 go 1.16
 

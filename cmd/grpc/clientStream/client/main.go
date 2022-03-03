@@ -2,13 +2,13 @@ package main
 
 import (
 	"context"
-	pb "github.com/ronnielin8862/go-api/api/grpc/clientStram"
+	pb "github.com/ronnielin8862/go-practice/api/grpc/clientStram"
 	"google.golang.org/grpc"
 	"log"
 	"time"
 )
 
-func main(){
+func main() {
 
 	conn, err := grpc.Dial("0.0.0.0:50005", grpc.WithInsecure())
 	if err != nil {
@@ -21,8 +21,8 @@ func main(){
 
 	stream, err := client.FetchResponse(ctx)
 
-	for i:=10; i<17; i++{
-		if err := stream.Send(&pb.Request{Id: int32(i)}); err != nil{
+	for i := 10; i < 17; i++ {
+		if err := stream.Send(&pb.Request{Id: int32(i)}); err != nil {
 			log.Fatalf("%v.Send(%v) = %v", stream, i, err)
 		}
 	}

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/ronnielin8862/go-api/pkg/blockChain/practice3/btc/genPrivateKey"
+	"github.com/ronnielin8862/go-practice/pkg/blockChain/practice3/btc/genPrivateKey"
 )
 
 // Deprecated: 採用 genPrivateKey2

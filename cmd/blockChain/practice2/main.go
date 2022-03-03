@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	bc "github.com/ronnielin8862/go-api/pkg/blockChain/practice2"
+	bc "github.com/ronnielin8862/go-practice/pkg/blockChain/practice2"
 )
 
 func Help() {

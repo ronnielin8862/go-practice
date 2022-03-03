@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
-	pb "github.com/ronnielin8862/go-api/api/grpc/serverStream"
+	pb "github.com/ronnielin8862/go-practice/api/grpc/serverStream"
 	"google.golang.org/grpc"
 	"io"
 	"log"

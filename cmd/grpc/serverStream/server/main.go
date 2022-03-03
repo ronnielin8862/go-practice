@@ -3,7 +3,7 @@ package main
 import (
 	_ "context"
 	"fmt"
-	pb "github.com/ronnielin8862/go-api/api/grpc/serverStream"
+	pb "github.com/ronnielin8862/go-practice/api/grpc/serverStream"
 	"google.golang.org/grpc"
 	"log"
 	"net"
@@ -34,7 +34,6 @@ func (s server) FetchResponse(in *pb.Request, srv pb.StreamService_FetchResponse
 	wg.Wait()
 	return nil
 }
-
 
 func main() {
 	// create listiner

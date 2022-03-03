@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/ronnielin8862/go-api/pkg/mathForTest"
+	"github.com/ronnielin8862/go-practice/pkg/mathForTest"
 	"github.com/stretchr/testify/assert"
 )
 

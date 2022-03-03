@@ -6,7 +6,7 @@ import (
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
-	"github.com/ronnielin8862/go-api/pkg/blockChain"
+	"github.com/ronnielin8862/go-practice/pkg/blockChain"
 )
 
 func main() {

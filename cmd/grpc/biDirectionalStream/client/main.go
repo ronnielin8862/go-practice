@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
-	pb "github.com/ronnielin8862/go-api/api/grpc/biDirectionalStreaming"
+	pb "github.com/ronnielin8862/go-practice/api/grpc/biDirectionalStreaming"
 	"google.golang.org/grpc"
 	"io"
 	"log"
@@ -18,7 +18,7 @@ func main() {
 	}
 	client := pb.NewStreamServiceClient(conn)
 
-	stream , err := client.FetchResponse(context.Background())
+	stream, err := client.FetchResponse(context.Background())
 
 	if err != nil {
 		log.Fatalf("open stream error %v", err)
@@ -31,7 +31,7 @@ func main() {
 
 	stream.Send(&pb.Request{Id: id, Name: name})
 	go func() {
-		for i := 0 ; i < 4; i++{
+		for i := 0; i < 4; i++ {
 			resp, err := stream.Recv()
 			if err == io.EOF {
 				fmt.Println("進入EOF")
@@ -46,14 +46,14 @@ func main() {
 			id = id + 1
 			name = name + "小天才?"
 
-			stream.Send(&pb.Request{Id: id , Name: name})
-			time.Sleep(time.Second *2 )
+			stream.Send(&pb.Request{Id: id, Name: name})
+			time.Sleep(time.Second * 2)
 		}
 		fmt.Println("該結束囉")
 		if err := stream.CloseSend(); err != nil {
 			log.Println(err)
 		}
-		time.Sleep(time.Second *2 )
+		time.Sleep(time.Second * 2)
 		done <- true
 	}()
 	<-done //we will wait until all response is received

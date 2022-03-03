@@ -3,13 +3,13 @@ package main
 import (
 	"context"
 	"fmt"
-	calculatorPB "github.com/ronnielin8862/go-api/api/grpc/unary"
+	calculatorPB "github.com/ronnielin8862/go-practice/api/grpc/unary"
 	"google.golang.org/grpc"
 	"log"
 	"net"
 )
 
-type Server struct {}
+type Server struct{}
 
 func main() {
 	fmt.Println("starting gRPC server...")
