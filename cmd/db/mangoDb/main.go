@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"fmt"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"log"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -22,15 +24,62 @@ func main() {
 	TestCollection := db.Collection("test")
 
 	//insertOne
-	//test :=Test{"AAAAA","BBBBBBB"}
+	//test :=Test{"A","B"}
 	//_, _ = InsertOneTest(test, TestCollection)
 
 	//insertMany
-	var tests []interface{}
-	tests = append(tests, Test{"CCCCCC", "DDDDDD"})
-	tests = append(tests, Test{"EEEEEEE", "FFFFFF"})
-	InsertMany(tests, TestCollection)
+	//var tests []interface{}
+	//tests = append(tests, Test{"C", "D"})
+	//tests = append(tests, Test{"E", "F"})
+	//InsertMany(tests, TestCollection)
 
+	//GetOneById
+	//GetTestById("624acea08370a5e5a98427cb",TestCollection)
+
+	//GetByColumn
+	//GetAll
+	d := bson.D{{"name", "AAAAA"}}
+	GetTestByColumn(d, TestCollection)
+}
+
+func GetTestByColumn(d bson.D, Collection *mongo.Collection) {
+	var test Test
+	var tests []Test
+	Ctx := context.TODO()
+
+	//by column
+	//cursor, err := Collection.Find(Ctx, d)
+	//all
+	cursor, err := Collection.Find(Ctx, bson.D{})
+	if err != nil {
+		defer cursor.Close(Ctx)
+		fmt.Printf("Error")
+	}
+
+	for cursor.Next(Ctx) {
+		err := cursor.Decode(&test)
+		if err != nil {
+			fmt.Printf("Error")
+		}
+		fmt.Printf("Gets : %v \n", test)
+		tests = append(tests, test)
+	}
+}
+
+func GetTestById(id string, Collection *mongo.Collection) {
+	var test Test
+	objectId, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		fmt.Printf("Error")
+	}
+
+	err = Collection.
+		FindOne(context.TODO(), bson.D{{"_id", objectId}}).
+		Decode(&test)
+	if err != nil {
+		fmt.Printf("Error")
+	}
+	fmt.Printf("Get One : %v", test)
 }
 
 func InsertMany(t []interface{}, Collection *mongo.Collection) (string, error) {
