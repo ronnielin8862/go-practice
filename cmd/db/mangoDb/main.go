@@ -42,9 +42,20 @@ func main() {
 	//GetTestByColumn(d, TestCollection)
 
 	//UpdateById
-	id := "624acea08370a5e5a98427cb"
-	d := bson.D{{"name", "EEEEeee"}, {"identify", "FFFFFFfff"}}
-	UpdateTest(id, TestCollection, d)
+	//id := "624acea08370a5e5a98427cb"
+	//d := bson.D{{"name", "EEEEeee"}, {"identify", "FFFFFFfff"}}
+	//UpdateTest(id, TestCollection, d)
+
+	//deleteById
+	DeleteTest("624ad285bbce277fb8fea11e", TestCollection)
+}
+
+func DeleteTest(id string, Collection *mongo.Collection) {
+	objectId, err := primitive.ObjectIDFromHex(id)
+	_, err = Collection.DeleteOne(context.TODO(), bson.D{{"_id", objectId}})
+	if err != nil {
+		fmt.Printf("Error")
+	}
 }
 
 func UpdateTest(id string, Collection *mongo.Collection, d bson.D) {
