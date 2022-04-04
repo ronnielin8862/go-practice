@@ -38,10 +38,28 @@ func main() {
 
 	//GetByColumn
 	//GetAll
-	d := bson.D{{"name", "AAAAA"}}
-	GetTestByColumn(d, TestCollection)
+	//d := bson.D{{"name", "AAAAA"}}
+	//GetTestByColumn(d, TestCollection)
+
+	//UpdateById
+	id := "624acea08370a5e5a98427cb"
+	d := bson.D{{"name", "EEEEeee"}, {"identify", "FFFFFFfff"}}
+	UpdateTest(id, TestCollection, d)
 }
 
+func UpdateTest(id string, Collection *mongo.Collection, d bson.D) {
+	objectId, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		fmt.Printf("Error")
+	}
+	filter := bson.D{{"_id", objectId}}
+	update := bson.D{{"$set", d}}
+	_, _ = Collection.UpdateOne(
+		context.TODO(),
+		filter,
+		update,
+	)
+}
 func GetTestByColumn(d bson.D, Collection *mongo.Collection) {
 	var test Test
 	var tests []Test
