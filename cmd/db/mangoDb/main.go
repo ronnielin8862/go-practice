@@ -39,12 +39,12 @@ func main() {
 
 	//GetByColumn
 	//GetAll
-	d := bson.D{{"name", "AAAAA"}}
+	d := bson.D{{"name", "A"}}
 	GetTestByColumn(d, TestCollection)
 
 	//UpdateById
 	//id := "624acea08370a5e5a98427cb"
-	//d := bson.D{{"name", "EEEEeee"}, {"identify", "FFFFFFfff"}}
+	//d := bson.D{{"name", "Eeee"}, {"identify", "FFFFFFfff"}}
 	//UpdateTest(id, TestCollection, d)
 
 	//deleteById
@@ -77,9 +77,10 @@ func GetTestByColumn(d bson.D, Collection *mongo.Collection) {
 	var tests []Test
 	Ctx := context.TODO()
 
-	//by column
+	//get by column
 	//cursor, err := Collection.Find(Ctx, d)
-	//all
+
+	//get all
 	cursor, err := Collection.Find(Ctx, bson.D{})
 	if err != nil {
 		defer cursor.Close(Ctx)
