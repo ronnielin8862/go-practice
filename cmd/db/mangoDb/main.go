@@ -15,6 +15,7 @@ import (
 const uri = "mongodb://dev:123456@localhost:27017/great?maxPoolSize=20&w=majority"
 
 type Test struct {
+	Id       string `bson:"_id"`
 	Name     string `bson:"name"`
 	Identify string `bson:"identify"`
 }
@@ -38,8 +39,8 @@ func main() {
 
 	//GetByColumn
 	//GetAll
-	//d := bson.D{{"name", "AAAAA"}}
-	//GetTestByColumn(d, TestCollection)
+	d := bson.D{{"name", "AAAAA"}}
+	GetTestByColumn(d, TestCollection)
 
 	//UpdateById
 	//id := "624acea08370a5e5a98427cb"
@@ -47,7 +48,7 @@ func main() {
 	//UpdateTest(id, TestCollection, d)
 
 	//deleteById
-	DeleteTest("624ad285bbce277fb8fea11e", TestCollection)
+	//DeleteTest("624ad285bbce277fb8fea11e", TestCollection)
 }
 
 func DeleteTest(id string, Collection *mongo.Collection) {
