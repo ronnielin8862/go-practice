@@ -11,9 +11,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-// Connection URI
-const uri = "mongodb://dev:123456@localhost:27017/great?maxPoolSize=20&w=majority"
-
 type Test struct {
 	Id       string `bson:"_id"`
 	Name     string `bson:"name"`
@@ -139,7 +136,7 @@ func InsertOneTest(t Test, Collection *mongo.Collection) (string, error) {
 	return fmt.Sprintf("%v", result.InsertedID), err
 }
 
-/*Setup opens a database connection to mongodb*/
+// ConnectDbGreat Setup opens a database connection to mongodb
 func ConnectDbGreat() *mongo.Database {
 	Ctx := context.TODO()
 	host := "127.0.0.1"
