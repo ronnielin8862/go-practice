@@ -262,13 +262,10 @@ func (wsc *Wsc) Connect() {
 		if err != nil {
 
 			if wsc.onConnectError != nil {
-
 				wsc.onConnectError(err)
-
 			}
 
 			// 重试
-
 			time.Sleep(nextRec)
 
 			continue
@@ -276,7 +273,6 @@ func (wsc *Wsc) Connect() {
 		}
 
 		// 变更连接状态
-
 		wsc.WebSocket.connMu.Lock()
 
 		wsc.WebSocket.isConnected = true
@@ -284,7 +280,6 @@ func (wsc *Wsc) Connect() {
 		wsc.WebSocket.connMu.Unlock()
 
 		// 连接成功回调
-
 		if wsc.onConnected != nil {
 
 			wsc.onConnected()
@@ -292,11 +287,9 @@ func (wsc *Wsc) Connect() {
 		}
 
 		// 设置支持接受的消息最大长度
-
 		wsc.WebSocket.Conn.SetReadLimit(wsc.Config.MaxMessageSize)
 
 		// 收到连接关闭信号回调
-
 		defaultCloseHandler := wsc.WebSocket.Conn.CloseHandler()
 
 		wsc.WebSocket.Conn.SetCloseHandler(func(code int, text string) error {
@@ -306,9 +299,7 @@ func (wsc *Wsc) Connect() {
 			wsc.clean()
 
 			if wsc.onClose != nil {
-
 				wsc.onClose(code, text)
-
 			}
 
 			return result
@@ -316,15 +307,12 @@ func (wsc *Wsc) Connect() {
 		})
 
 		// 收到ping回调
-
 		defaultPingHandler := wsc.WebSocket.Conn.PingHandler()
 
 		wsc.WebSocket.Conn.SetPingHandler(func(appData string) error {
 
 			if wsc.onPingReceived != nil {
-
 				wsc.onPingReceived(appData)
-
 			}
 
 			return defaultPingHandler(appData)
@@ -332,15 +320,12 @@ func (wsc *Wsc) Connect() {
 		})
 
 		// 收到pong回调
-
 		defaultPongHandler := wsc.WebSocket.Conn.PongHandler()
 
 		wsc.WebSocket.Conn.SetPongHandler(func(appData string) error {
 
 			if wsc.onPongReceived != nil {
-
 				wsc.onPongReceived(appData)
-
 			}
 
 			return defaultPongHandler(appData)
@@ -348,7 +333,6 @@ func (wsc *Wsc) Connect() {
 		})
 
 		// 开启协程读
-
 		go func() {
 
 			for {
@@ -358,53 +342,39 @@ func (wsc *Wsc) Connect() {
 				if err != nil {
 
 					// 异常断线重连
-
 					if wsc.onDisconnected != nil {
-
 						wsc.onDisconnected(err)
-
 					}
 
 					wsc.closeAndRecConn()
 
 					return
-
 				}
 
 				switch messageType {
 
 				// 收到TextMessage回调
-
 				case websocket.TextMessage:
 
 					if wsc.onTextMessageReceived != nil {
-
 						wsc.onTextMessageReceived(string(message))
-
 					}
 
 					break
 
 				// 收到BinaryMessage回调
-
 				case websocket.BinaryMessage:
 
 					if wsc.onBinaryMessageReceived != nil {
-
 						wsc.onBinaryMessageReceived(message)
-
 					}
 
 					break
-
 				}
-
 			}
-
 		}()
 
 		// 开启协程写
-
 		go func() {
 
 			for {
@@ -414,37 +384,26 @@ func (wsc *Wsc) Connect() {
 				case wsMsg, ok := <-wsc.WebSocket.sendChan:
 
 					if !ok {
-
 						return
-
 					}
 
 					err := wsc.send(wsMsg.t, wsMsg.msg)
-
 					if err != nil {
-
 						if wsc.onSentError != nil {
-
 							wsc.onSentError(err)
-
 						}
-
 						continue
-
 					}
 
 					switch wsMsg.t {
 
 					case websocket.CloseMessage:
-
 						return
 
 					case websocket.TextMessage:
 
 						if wsc.onTextMessageSent != nil {
-
 							wsc.onTextMessageSent(string(wsMsg.msg))
-
 						}
 
 						break
@@ -452,25 +411,17 @@ func (wsc *Wsc) Connect() {
 					case websocket.BinaryMessage:
 
 						if wsc.onBinaryMessageSent != nil {
-
 							wsc.onBinaryMessageSent(wsMsg.msg)
-
 						}
 
 						break
-
 					}
-
 				}
-
 			}
-
 		}()
 
 		return
-
 	}
-
 }
 
 var (
@@ -483,9 +434,7 @@ var (
 func (wsc *Wsc) SendTextMessage(message string) error {
 
 	if wsc.Closed() {
-
 		return CloseErr
-
 	}
 
 	// 丢入缓冲通道处理
@@ -493,49 +442,40 @@ func (wsc *Wsc) SendTextMessage(message string) error {
 
 	case wsc.WebSocket.sendChan <- &wsMsg{
 
-		t: websocket.TextMessage,
-
+		t:   websocket.TextMessage,
 		msg: []byte(message),
 	}:
 
 	default:
 
 		return BufferErr
-
 	}
 
 	return nil
-
 }
 
 // 发送BinaryMessage消息
 func (wsc *Wsc) SendBinaryMessage(data []byte) error {
 
 	if wsc.Closed() {
-
 		return CloseErr
-
 	}
 
 	// 丢入缓冲通道处理
-
 	select {
 
 	case wsc.WebSocket.sendChan <- &wsMsg{
 
-		t: websocket.BinaryMessage,
-
+		t:   websocket.BinaryMessage,
 		msg: data,
 	}:
 
 	default:
 
 		return BufferErr
-
 	}
 
 	return nil
-
 }
 
 // 发送消息到连接端
@@ -546,36 +486,29 @@ func (wsc *Wsc) send(messageType int, data []byte) error {
 	defer wsc.WebSocket.sendMu.Unlock()
 
 	if wsc.Closed() {
-
 		return CloseErr
-
 	}
 
 	var err error
 
 	// 超时时间
-
 	_ = wsc.WebSocket.Conn.SetWriteDeadline(time.Now().Add(wsc.Config.WriteWait))
 
 	err = wsc.WebSocket.Conn.WriteMessage(messageType, data)
 
 	return err
-
 }
 
 // 断线重连
 func (wsc *Wsc) closeAndRecConn() {
 
 	if wsc.Closed() {
-
 		return
-
 	}
 
 	wsc.clean()
 
 	go wsc.Connect()
-
 }
 
 // 主动关闭连接
@@ -586,13 +519,10 @@ func (wsc *Wsc) Close() {
 }
 
 // 主动关闭连接，附带消息
-
 func (wsc *Wsc) CloseWithMsg(msg string) {
 
 	if wsc.Closed() {
-
 		return
-
 	}
 
 	_ = wsc.send(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, msg))
@@ -600,15 +530,11 @@ func (wsc *Wsc) CloseWithMsg(msg string) {
 	wsc.clean()
 
 	if wsc.onClose != nil {
-
 		wsc.onClose(websocket.CloseNormalClosure, msg)
-
 	}
-
 }
 
 // 清理资源
-
 func (wsc *Wsc) clean() {
 
 	if wsc.Closed() {

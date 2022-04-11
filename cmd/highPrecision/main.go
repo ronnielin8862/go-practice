@@ -27,3 +27,10 @@ func testShopSpringDecimal(s string) string {
 	v, _ := decimal.NewFromString(s)
 	return v.String()
 }
+
+func testBigFloat(s string) string {
+
+	result := big.Float{}
+	result.SetString(s)
+	return result.String()
+}
