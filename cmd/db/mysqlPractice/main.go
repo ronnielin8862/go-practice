@@ -10,6 +10,7 @@ import (
 )
 
 var log = logrus.New()
+var db *sql.DB
 
 func init() {
 	// 設置日誌格式為test格式
@@ -20,6 +21,8 @@ func init() {
 
 	// 設置級別
 	log.SetLevel(logrus.DebugLevel)
+
+	db, _ = sql.Open("mysql", "root:my-password@/test") //user:password@/dbname
 }
 
 type Emp struct {
@@ -85,8 +88,6 @@ func (emp *Emp) DataProcessing() (empData *Emp) {
 }
 
 func InsertEMP(EMPNO *uint16, ENAME string, JOB string, DEPTNO uint16) {
-	db, err := sql.Open("mysql", "root:my-password@/test") //user:password@/dbname
-	checkErr(err, db)
 
 	//插入資料
 	stmt, err := db.Prepare("INSERT INTO EMP (EMPNO , ENAME, JOB ,DEPTNO ) VALUE (?,?,?,?)")

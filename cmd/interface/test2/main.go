@@ -25,8 +25,8 @@ func (m MongoDB) Read(s string) string {
 }
 func (m MongoDB) Write(string) {}
 
-// New 會將接收到的物件以 Database 實作，並且呼叫相關函式對資料庫進行操作。
-func New(db Database, s string) {
+// NewDb 會將接收到的物件以 Database 實作，並且呼叫相關函式對資料庫進行操作。
+func NewDb(db Database, s string) {
 	// 讀取資料庫。
 	db.Read(s)
 	// 寫入資料庫。
@@ -34,11 +34,10 @@ func New(db Database, s string) {
 }
 
 func main() {
-	// var mm MySQL
 
 	s := "我叫你吹"
-	// 將建構體傳入 New 就會被實作成 Database。
-	New(MySQL{}, s)
-	New(MongoDB{}, s)
+	// 將建構體傳入 NewDb 就會被實作成 Database。
+	NewDb(MySQL{}, s)
+	NewDb(MongoDB{}, s)
 
 }

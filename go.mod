@@ -17,6 +17,7 @@ require (
 	github.com/jpillora/backoff v1.0.0
 	github.com/json-iterator/go v1.1.11 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
+	github.com/lib/pq v1.10.5 // indirect
 	github.com/mattn/go-isatty v0.0.13 // indirect
 	github.com/shopspring/decimal v1.3.1
 	github.com/sirupsen/logrus v1.8.1
