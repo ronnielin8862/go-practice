@@ -5,28 +5,29 @@ import (
 )
 
 func main() {
+	//generic map
 	ints := map[string]int64{"first": 10, "second": 20}
 	floats := map[string]float64{"first": 0.1, "second": 0.2}
-	fmt.Printf("genericNumFromMap ： ints = %v , floats = %v \n", genericNumFromMap(ints), genericNumFromMap(floats))
+	fmt.Printf("numFromMap ： ints = %v , floats = %v \n", numFromMap(ints), numFromMap(floats))
 
+	//generic slice
 	intArray := []int64{1, 2, 3, 4}
 	floatArray := []float64{0.1, 0.2, 0.3}
-	fmt.Printf("genericNumFromSlice ： ints = %v , floats = %v \n", genericNumFromSlice(intArray), genericNumFromSlice(floatArray))
+	fmt.Printf("numFromSlice ： ints = %v , floats = %v \n", numFromSlice(intArray), numFromSlice(floatArray))
 
 	//傳入相同類型，返回不同類型
 	fmt.Println("stings a = ", returnGeneric("a"))
 	fmt.Println("stings b = ", returnGeneric("b"))
-
 }
 
-func genericNumFromMap[k comparable, V int64 | float64](m map[k]V) (s V) {
+func numFromMap[k comparable, V int64 | float64](m map[k]V) (s V) {
 	for _, v := range m {
 		s += v
 	}
 	return s
 }
 
-func genericNumFromSlice[V int64 | float64](m []V) (result V) {
+func numFromSlice[V int64 | float64](m []V) (result V) {
 	for _, v := range m {
 		result += v
 	}
@@ -38,30 +39,30 @@ func returnGeneric(arg string) any {
 		a := []string{"a", "b"}
 		return a
 	}
-
 	return 1234567
 }
 
-//
-//func genericString[V int](m V) []any {
-//	var s []string
-//
-//	if reflect.TypeOf(m)
-//	aaaa := len(m)
-//	for _, v := range len(m) {
-//		s = append(s, string(v))
+//comparable 必須是與相同的參數類型(V) 才能match type
+//func returnGeneric2[V comparable](ggg V, arg string) V {
+//	if arg == "a" {
+//		a := []string{"a", "b"}
+//		//返回其他comparable 類型就會報錯
+//		return a
 //	}
-//	return s
-//}
 //
-//func test(v int) {
-//	aa := len()
+//	if ggg == ggg {
+//
+//	}
+//	return ggg
 //}
 
-//var gg g[int64]
-
-func testArg(arg MyMap[int, int64]) {
-
+func find[V comparable](what V, s []V) int {
+	for i, v := range s {
+		if v == what {
+			return i
+		}
+	}
+	return -1
 }
 
 type MyMap[T comparable, V int64 | float64] map[T]V
