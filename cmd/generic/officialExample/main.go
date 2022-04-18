@@ -19,8 +19,7 @@ func main() {
 
 }
 
-func genericNumFromMap[k comparable, V int64 | float64](m map[k]V) V {
-	var s V
+func genericNumFromMap[k comparable, V int64 | float64](m map[k]V) (s V) {
 	for _, v := range m {
 		s += v
 	}
