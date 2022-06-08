@@ -1,0 +1,6 @@
+time="2022-04-11T23:03:52+07:00" level=info msg="開始測試insert DB"
+time="2022-04-11T23:03:52+07:00" level=debug msg="不錯喔" DEPTNO =111 ENAME ="第1個" JOB =No1 傳入內容 EMPNO =111
+time="2022-04-11T23:03:52+07:00" level=debug msg="測試不使用WithFields"
+time="2022-04-11T23:05:02+07:00" level=info msg="開始測試insert DB"
+time="2022-04-11T23:05:02+07:00" level=debug msg="不錯喔" DEPTNO =111 ENAME ="第1個" JOB =No1 傳入內容 EMPNO =111
+time="2022-04-11T23:05:02+07:00" level=debug msg="測試不使用WithFields"
