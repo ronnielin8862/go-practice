@@ -1,15 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="accountSettings">
-    <option name="activeProfile" value="profile:default" />
-    <option name="activeRegion" value="ap-southeast-1" />
+    <option name="activeProfile" value="profile:s3-user" />
+    <option name="activeRegion" value="us-west-2" />
     <option name="recentlyUsedProfiles">
       <list>
+        <option value="profile:s3-user" />
+        <option value="profile:1ronnie" />
         <option value="profile:default" />
       </list>
     </option>
     <option name="recentlyUsedRegions">
       <list>
+        <option value="us-west-2" />
+        <option value="us-east-2" />
+        <option value="ap-northeast-1" />
         <option value="ap-southeast-1" />
       </list>
     </option>
