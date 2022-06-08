@@ -34,7 +34,7 @@ func TestGetUsersNameReceiver(t *testing.T) {
 	m.EXPECT().Get(gomock.Eq(int64(2))).Return(users1, nil)
 	m.EXPECT().Get(gomock.Eq(int64(4))).Return(users2, nil)
 
-	result := GetUsersName(int64(2), int64(4), m)
+	result := m.GetUsersNameReceiver(int64(2), int64(4))
 	fmt.Println(result)
 }
 
