@@ -38,6 +38,7 @@ func TestGetUsersNameReceiver(t *testing.T) {
 	fmt.Println(result)
 }
 
+//go:generate mockgen -source=./user.go -destination=./user_mock.go -package=user
 func TestGetUsersMock(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish() // 断言 DB.Get() 方法是否被调用

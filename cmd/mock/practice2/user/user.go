@@ -5,6 +5,7 @@ import "fmt"
 type DB interface {
 	Get(id int64) ([]User, error)
 	GetUsersNameReceiver(id1, id2 int64) string
+	AAA(a int)
 }
 
 type DBI struct{}
