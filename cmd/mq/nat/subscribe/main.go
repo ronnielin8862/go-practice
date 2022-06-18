@@ -4,9 +4,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/nats-io/nats.go"
+	"github.com/nats-io/stan.go"
 	"log"
 	"os"
 	"os/signal"
+	"time"
 )
 
 func main() {
@@ -157,6 +159,40 @@ func jetStreaForDDU(nc *nats.Conn) {
 	}
 }
 
+func natsStreamForDDU(nc *nats.Conn) {
+	_, err := GetNats().Subscribe(ChatRecordChannel, ChatRecordHandler, stan.DurableName(ChatRecordChannel))
+	if err != nil {
+		fmt.Println("订阅top%s失败,err:%v", ChatRecordChannel, err)
+	}
+	_, err = GetNats().Subscribe(SendGiftChannel, SendGiftHandler, stan.DurableName(SendGiftChannel))
+	if err != nil {
+		fmt.Println("订阅top%s失败,err:%v", ChatRecordChannel, err)
+	}
+}
+
+//聊天记录处理
+func ChatRecordHandler(msg *stan.Msg) {
+	var chatHistory ChatHistory
+	fmt.Println("chatHistory: ", chatHistory)
+	json.Unmarshal(msg.Data, &chatHistory)
+}
+
+//礼物处理
+func SendGiftHandler(msg *stan.Msg) {
+	var sendGiftReq SendGiftReq
+	fmt.Println("sendGiftReq: ", sendGiftReq)
+	json.Unmarshal(msg.Data, &sendGiftReq)
+
+}
+
+const (
+	WebapiStreamChannel = "webapiStreamChannel"
+	ChatRecordChannel   = "JetStream.ChatRecordSubject"
+	SendGiftChannel     = "JetStream.SendGiftSubject"
+	AttentAnchorChannel = "attentAnchorChannel"
+	ChangePropChannel   = "changePropChannel"
+)
+
 type SendGiftReq struct {
 	Anchorid int   `json:"anchorid" validate:"required"`
 	Giftid   int   `json:"giftid" validate:"required"`
@@ -171,4 +207,47 @@ type ChatHistory struct {
 	RoomId     int    `json:"room_id"`                            //varchar(100) DEFAULT NULL COMMENT '房间id',
 	CreateTime int64  `json:"create_time"`                        //datetime DEFAULT NULL,
 	Content    string `json:"content"`
+}
+
+var NatsDB stan.Conn
+
+func InitNats() error {
+	fName := "InitNats"
+	err := GetNatsConn(
+		"0.0.0.0",
+		"4222",
+		"nats%3admin##1",
+		"oscars3higehaohaizi",
+		"test-cluster",
+		"natsClicent01")
+	if err != nil {
+		return fmt.Errorf("%s Init fail %s", fName, err.Error())
+	}
+	return nil
+}
+
+func GetNatsConn(host, port, user, passwd, stanClusterID, clientID string) error {
+	url := fmt.Sprintf("nats://%s:%s", host, port)
+	nc, err := nats.Connect(
+		url,
+		nats.UserInfo(user, passwd),
+		nats.Timeout(time.Second*10),
+		nats.PingInterval(time.Second*4),
+	)
+	if err != nil {
+		fmt.Println("error by nats connect: %v", err)
+	}
+	NatsDB, err = stan.Connect(stanClusterID, clientID, stan.NatsConn(nc),
+		stan.SetConnectionLostHandler(func(_ stan.Conn, reason error) {
+			fmt.Println("Connection lost, reason: %v\n", reason)
+		}))
+	if err != nil {
+		fmt.Println("error by nats connect: %v", err)
+	}
+
+	return nil
+}
+
+func GetNats() stan.Conn {
+	return NatsDB
 }

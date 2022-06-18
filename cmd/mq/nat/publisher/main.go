@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/nats-io/nats.go"
+	"github.com/nats-io/stan.go"
 	"log"
 	"strconv"
 	"time"
@@ -26,8 +27,16 @@ type SendGiftReq struct {
 }
 
 func main() {
-	nc, _ := nats.Connect("nats://127.0.0.1:4222")
-	jetStreamPubTestForDDU(nc)
+	//url := fmt.Sprintf("nats://127.0.0.1:4222")
+	url := fmt.Sprintf("nats://%s:%s", "52.221.194.38", "4344")
+	nc, _ := nats.Connect(
+		url,
+		nats.UserInfo("nats%3admin##1", "oscars3higehaohaizi"),
+		nats.Timeout(time.Second*10),
+		nats.PingInterval(time.Second*4),
+	)
+	//jetStreamPubTestForDDU(nc)
+	natsStreaming(nc)
 }
 
 func generalPublish(nc *nats.Conn) {
@@ -211,3 +220,70 @@ func jetStreamPubTestForDDU(nc *nats.Conn) {
 		i++
 	}
 }
+
+func natsStreaming(nc *nats.Conn) {
+
+	NatsDB, err := stan.Connect("test-cluster", "natsClicent01", stan.NatsConn(nc),
+		stan.SetConnectionLostHandler(func(_ stan.Conn, reason error) {
+			fmt.Println("Connection lost, reason: %v\n", reason)
+		}))
+	if err != nil {
+		fmt.Println("error by nats connect: %v", err)
+	}
+
+	fmt.Println("JetStream.ChatRecordSubject = ", "DDDFDFDFDFDFDFDF")
+	err = NatsDB.Publish("JetStream.ChatRecordSubject", []byte("DDDFDFDFDFDFDFDF"))
+	if err != nil {
+		fmt.Println("送不出去, err = ", err)
+	}
+
+	err = NatsDB.Publish("JetStream.SendGiftSubject", []byte("dfdfdffdfeefefeffe"))
+	if err != nil {
+		fmt.Println("送不出去, err = ", err)
+	}
+
+	time.Sleep(time.Second * 2)
+
+	NatsDB.Subscribe("JetStream.ChatRecordSubject", ChatRecordHandler, stan.DurableName("JetStream.ChatRecordSubject"))
+	if err != nil {
+		fmt.Println("订阅top%s失败,err:%v", "JetStream.ChatRecordSubject", err)
+	}
+	time.Sleep(time.Second * 2)
+
+	// Unsubscribe
+	//sub.Unsubscribe()
+
+	// Close connection
+	NatsDB.Close()
+
+}
+
+//聊天记录处理
+func ChatRecordHandler(msg *stan.Msg) {
+	fmt.Println("收到聊天记订阅消息:%v", string(msg.Data))
+
+	var chatHistory ChatHistory
+	err := json.Unmarshal(msg.Data, &chatHistory)
+	if err != nil {
+		fmt.Println("SubMessage chatRecord InsertChatHistory err [%v]", err)
+	}
+	fmt.Println("chatHistory: ", chatHistory)
+}
+
+//
+//func main() {
+//	publisher, err := nats.NewStreamingPublisher(
+//		nats.StreamingPublisherConfig{
+//			ClusterID: "test-cluster",
+//			ClientID:  "natsClicent01",
+//			StanOptions: []stan.Option{
+//				stan.NatsURL("nats://nats-streaming:4222"),
+//			},
+//			Marshaler: nats.GobMarshaler{},
+//		},
+//		watermill.NewStdLogger(false, false),
+//	)
+//	if err != nil {
+//		panic(err)
+//	}
+//}
