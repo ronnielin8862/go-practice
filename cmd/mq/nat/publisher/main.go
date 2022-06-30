@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/nats-io/nats.go"
 	"github.com/nats-io/stan.go"
+	"github.com/ronnielin8862/go-practice/globle"
 	"log"
 	"strconv"
 	"time"
@@ -27,8 +28,8 @@ type SendGiftReq struct {
 }
 
 func main() {
-	//url := fmt.Sprintf("nats://127.0.0.1:4222")
-	url := fmt.Sprintf("nats://%s:%s", "52.221.194.38", "4344")
+	url := fmt.Sprintf("nats://127.0.0.1:4222")
+	//url := fmt.Sprintf("nats://%s:%s", "52.221.194.38", "4344")
 	nc, _ := nats.Connect(
 		url,
 		nats.UserInfo("nats%3admin##1", "oscars3higehaohaizi"),
@@ -36,7 +37,197 @@ func main() {
 		nats.PingInterval(time.Second*4),
 	)
 	//jetStreamPubTestForDDU(nc)
-	natsStreaming(nc)
+	//natsStreamingForDDUMatchTextLive(nc)
+	//natsStreamingForDDUScoreLive(nc)
+	natsStreamingForDDUStatsLive(nc)
+}
+
+func natsStreamingForDDUScoreLive(nc *nats.Conn) {
+	NatsDB, err := stan.Connect("test-cluster", "natsClicent07", stan.NatsConn(nc),
+		stan.SetConnectionLostHandler(func(_ stan.Conn, reason error) {
+			fmt.Println("Connection lost, reason: ", reason)
+		}))
+	if err != nil {
+		fmt.Println("error by nats connect: %v", err)
+	}
+	subject := fmt.Sprint(globle.FootballScoreLive)
+
+	for i := 1; i <= wantRun; i++ {
+		homeScore := Score{
+			Score:        i,
+			HalfScore:    2,
+			RedCard:      1,
+			YellowCard:   3,
+			CornerKick:   99,
+			OTScore:      1,
+			PenaltyScore: 3,
+		}
+		awayScore := Score{
+			Score:        4,
+			HalfScore:    2,
+			RedCard:      1,
+			YellowCard:   3,
+			CornerKick:   99,
+			OTScore:      1,
+			PenaltyScore: 3,
+		}
+		roomScore := RoomScoreLive{
+			Id:          6000098,
+			Status:      i,
+			HomeScore:   homeScore,
+			AwayScore:   awayScore,
+			KickOutTime: 1653249600,
+		}
+
+		mjs := []RoomScoreLive{roomScore}
+		mj, _ := json.Marshal(mjs)
+		err = NatsDB.Publish(subject, mj)
+		if err != nil {
+			fmt.Println("送不出去, err = ", err)
+		}
+
+		fmt.Println("publish success : ", roomScore)
+		time.Sleep(3 * time.Second)
+	}
+}
+
+var (
+	esCount = 0
+	wantRun = 1
+)
+
+func natsStreamingForDDUStatsLive(nc *nats.Conn) {
+	NatsDB, err := stan.Connect("test-cluster", "natsClicent07", stan.NatsConn(nc),
+		stan.SetConnectionLostHandler(func(_ stan.Conn, reason error) {
+			fmt.Println("Connection lost, reason: ", reason)
+		}))
+	if err != nil {
+		fmt.Println("error by nats connect: ", err)
+	}
+	subject := fmt.Sprint(globle.FootballStatsLive)
+	fmt.Println("subject = ", subject)
+	// 假資料組成
+	for i := 1; i <= wantRun; i++ {
+		msgs := statsLiveMock(i)
+
+		mj, _ := json.Marshal(msgs)
+		err = NatsDB.Publish(subject, mj)
+		if err != nil {
+			fmt.Println("送不出去, err = ", err)
+		}
+
+		time.Sleep(3 * time.Second)
+	}
+}
+
+func statsLiveMock(wantRun int) (msgs []RoomStatsLiveMessage) {
+	for i := 1; i <= esCount+wantRun; i++ {
+		msg := RoomStatsLiveMessage{
+			SentMessageStruct: SentMessageStruct{
+				Type: globle.StatusLive,
+			},
+			Id:   6000098,
+			Type: 3,
+			Home: 2,
+			Away: 3,
+		}
+		msgs = append(msgs, msg)
+	}
+
+	fmt.Println("last msgs: ", msgs[esCount+wantRun-1])
+	return msgs
+}
+
+func natsStreamingForDDUMatchTextLive(nc *nats.Conn) {
+	NatsDB, err := stan.Connect("test-cluster", "natsClicent07", stan.NatsConn(nc),
+		stan.SetConnectionLostHandler(func(_ stan.Conn, reason error) {
+			fmt.Println("Connection lost, reason: %v\n", reason)
+		}))
+	if err != nil {
+		fmt.Println("error by nats connect: %v", err)
+	}
+	subject := fmt.Sprint(globle.FootballTextLive)
+	fmt.Println("subject = ", subject)
+	// 假資料組成
+	for i := 1; i <= wantRun; i++ {
+		msgs := textLiveMock(i)
+
+		mj, _ := json.Marshal(msgs)
+		err = NatsDB.Publish(subject, mj)
+		if err != nil {
+			fmt.Println("送不出去, err = ", err)
+		}
+
+		time.Sleep(3 * time.Second)
+	}
+}
+
+func textLiveMock(wantRun int) (msgs []RoomTextLiveMessage) {
+	for i := 1; i <= esCount+wantRun; i++ {
+		msg := RoomTextLiveMessage{
+			SentMessageStruct: SentMessageStruct{
+				Type:    globle.TextLive,
+				Message: "test",
+			},
+			Id:       6000098,
+			Time:     strconv.Itoa(i),
+			Type:     3,
+			Data:     "14' - 第1张黄牌，裁判出示了本场比赛的第一张黄牌，给了(夏洛特独立)",
+			Position: 2,
+			Main:     1,
+		}
+		msgs = append(msgs, msg)
+	}
+
+	fmt.Println("last msgs: ", msgs[esCount+wantRun-1])
+	return msgs
+}
+
+type RoomScoreLiveMessage struct {
+	SentMessageStruct
+	ScoreLive RoomScoreLive `json:"score_live"`
+}
+
+type RoomScoreLive struct {
+	Id          int   `json:"match_id"`
+	Status      int   `json:"match_status"`
+	HomeScore   Score `json:"home_score"`
+	AwayScore   Score `json:"away_score"`
+	KickOutTime int64 `json:"kick_out_time"`
+}
+
+type Score struct {
+	Score        int `json:"score"`
+	HalfScore    int `json:"half_score"`
+	RedCard      int `json:"red_card"`
+	YellowCard   int `json:"yellow_card"`
+	CornerKick   int `json:"corner_kick"`
+	OTScore      int `json:"ot_score"`
+	PenaltyScore int `json:"penalty_score"`
+}
+
+type RoomStatsLiveMessage struct {
+	SentMessageStruct
+	Id   int64 `json:"match_id"`
+	Type int   `json:"type"`
+	Home int   `json:"home"`
+	Away int   `json:"away"`
+}
+
+type RoomTextLiveMessage struct {
+	SentMessageStruct
+	Id         int64  `json:"match_id"`    // 赛事id
+	Time       string `json:"time"`        // 事件时间
+	Type       int8   `json:"type"`        // 事件类型
+	Data       string `json:"data"`        // 事件文本
+	Position   int8   `json:"position"`    // 事件發生方， 0-中立 1-主队 2-客队
+	Main       int8   `json:"main"`        // 是否重要事件 0-否 1-是
+	CreateTime int64  `json:"create_time"` // 創建時間
+}
+
+type SentMessageStruct struct {
+	Type    string `json:"type"`
+	Message string `default:"" json:"message,omitempty"`
 }
 
 func generalPublish(nc *nats.Conn) {
@@ -221,7 +412,7 @@ func jetStreamPubTestForDDU(nc *nats.Conn) {
 	}
 }
 
-func natsStreaming(nc *nats.Conn) {
+func natsStreamingForDDU(nc *nats.Conn) {
 
 	NatsDB, err := stan.Connect("test-cluster", "natsClicent01", stan.NatsConn(nc),
 		stan.SetConnectionLostHandler(func(_ stan.Conn, reason error) {

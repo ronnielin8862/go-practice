@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/nats-io/nats.go"
 	"github.com/nats-io/stan.go"
+	"github.com/ronnielin8862/go-practice/globle"
 	"log"
 	"os"
 	"os/signal"
@@ -13,9 +14,82 @@ import (
 
 func main() {
 	// Create server connection
-	nc, _ := nats.Connect("nats://127.0.0.1:4222")
-	defer nc.Close()
-	jetStream(nc)
+	//nc, _ := nats.Connect("nats://127.0.0.1:4222")
+	//url := fmt.Sprintf("nats://%s:%s", "127.0.0.1", "4222")
+	url := fmt.Sprintf("nats://%s:%s", "52.221.194.38", "4344")
+	//jetstream
+	//jetStream(nc)
+
+	nc, err := nats.Connect(
+		url,
+		nats.UserInfo("nats%3admin##1", "oscars3higehaohaizi"),
+		nats.Timeout(time.Second*10),
+		nats.PingInterval(time.Second*4),
+	)
+	if err != nil {
+		fmt.Println("error by nats connect: ", err)
+	}
+	//jetStreamPubTestForDDU(nc)
+	//natsStreamingForDDUTextLive(nc)
+	//natsStreamingForDDUScoreLive(nc)
+	natsStreamingForDDUStatusLive(nc)
+	//natsStreamingForDDUTextLive(nc)
+}
+
+func natsStreamingForDDUStatusLive(nc *nats.Conn) {
+	NatsDB, err := stan.Connect("test-cluster", "natsClicent06", stan.NatsConn(nc),
+		stan.SetConnectionLostHandler(func(_ stan.Conn, err error) {
+			fmt.Printf("Connection lost, reason: %v \n\n", err)
+		}))
+	if err != nil {
+		fmt.Printf("error by nats connect: %v ", err)
+	}
+	NatsDB.Subscribe(globle.FootballStatsLive, sportsLiveHandler, stan.DurableName(globle.FootballStatsLive))
+	if err != nil {
+		fmt.Printf("订阅top%s失败,err:%v", "football_text_live \n", err)
+	}
+	select {}
+}
+
+func natsStreamingForDDUScoreLive(nc *nats.Conn) {
+	NatsDB, err := stan.Connect("test-cluster", "natsClicent06", stan.NatsConn(nc),
+		stan.SetConnectionLostHandler(func(_ stan.Conn, err error) {
+			fmt.Printf("Connection lost, reason: %v\n\n", err)
+		}))
+	if err != nil {
+		fmt.Printf("error by nats connect: %v ", err)
+	}
+	//NatsDB.Subscribe(globle.ScoreLive, scoreLiveHandler, stan.DurableName(globle.ScoreLive))
+	NatsDB.QueueSubscribe(globle.FootballScoreLive, "sports", sportsLiveHandler)
+	if err != nil {
+		fmt.Printf("订阅top%s失败,err:%v", "football_text_live \n", err)
+	}
+	select {}
+}
+
+func natsStreamingForDDUTextLive(nc *nats.Conn) {
+	NatsDB, err := stan.Connect("test-cluster", "natsClicent05", stan.NatsConn(nc),
+		stan.SetConnectionLostHandler(func(_ stan.Conn, reason error) {
+			fmt.Printf("Connection lost, reason: %v\n\n", reason)
+		}))
+	if err != nil {
+		fmt.Printf("error by nats connect: %v", err)
+	}
+	NatsDB.Subscribe(globle.FootballTextLive, sportsLiveHandler)
+	if err != nil {
+		fmt.Printf("订阅top%s失败,err:%v", "football_text_live", err)
+	}
+
+	//NatsDB.Subscribe(globle.BasketballTextLive, sportsLiveHandler, stan.DurableName(globle.BasketballTextLive))
+	//NatsDB.Subscribe(globle.BasketballTextLive, sportsLiveHandler)
+	//if err != nil {
+	//	fmt.Printf("订阅top%s失败,err:%v", "football_text_live", err)
+	//}
+	select {}
+}
+
+func sportsLiveHandler(msg *stan.Msg) {
+	log.Println("receive:", string(msg.Data))
 }
 
 func generalSubscript(nc *nats.Conn) {
@@ -160,7 +234,8 @@ func jetStreaForDDU(nc *nats.Conn) {
 }
 
 func natsStreamForDDU(nc *nats.Conn) {
-	_, err := GetNats().Subscribe(ChatRecordChannel, ChatRecordHandler, stan.DurableName(ChatRecordChannel))
+	//_, err := GetNats().Subscribe(ChatRecordChannel, ChatRecordHandler, stan.DurableName(ChatRecordChannel))
+	_, err := GetNats().Subscribe(ChatRecordChannel, ChatRecordHandler)
 	if err != nil {
 		fmt.Println("订阅top%s失败,err:%v", ChatRecordChannel, err)
 	}

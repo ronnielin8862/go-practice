@@ -7,6 +7,7 @@ import (
 	"log"
 	"math/rand"
 	"os"
+	"reflect"
 	"strconv"
 	"time"
 )
@@ -40,10 +41,19 @@ const mapping = `
   }
 }`
 
+const (
+	AttentAnchorChannel = "attentAnchorChannel"
+	ChangePrpos         = "changePropChannel"
+	FootballTextLive    = "football_text_live"
+)
+
 func connectEs() (*elastic.Client, error) {
 	return elastic.NewClient(
 		// 设置Elastic服务地址
-		elastic.SetURL("http://52.221.194.38:9200"),
+		elastic.SetURL("https://es-digpfxq8.public.tencentelasticsearch.com:9200"),
+		//elastic.SetURL("http://127.0.0.1:9200"),
+		// 連線帳密
+		elastic.SetBasicAuth("elastic", "Ddu@2022!"),
 		// 是否转换请求地址，默认为true,当等于true时 请求http://ip:port/_nodes/http，将其返回的url作为请求路径
 		elastic.SetSniff(false),
 		// 心跳检查,间隔时间
@@ -76,7 +86,79 @@ func main() {
 	} else {
 		fmt.Println("连接成功")
 	}
-	addOne(client)
+	//addOne(client)
+	//findMany(client)
+	count(client)
+}
+
+func count(client *elastic.Client) {
+	res, err := client.Count("football_text_live_3754340").Do(context.Background())
+	if err != nil {
+		fmt.Println("查询失败:%s", err)
+		return
+	}
+	fmt.Println("查询成功", res)
+}
+
+func findMany(client *elastic.Client) {
+
+	// 创建查询语句
+	//query := elastic.NewMatchAllQuery()
+	// 查询
+	//sourceContext := elastic.FetchSourceContext{}
+
+	// 分頁搜索
+	res, err := client.Search("football_text_live_3754340").Size(3).From(3).Do(context.Background())
+
+	if err != nil {
+		fmt.Println("查询失败:%s", err)
+		return
+	}
+	// 打印查询结果
+	if res.TotalHits() > 0 {
+		var b1 RoomTextLive
+		items := res.Each(reflect.TypeOf(b1))
+
+		fmt.Println("len = ", len(items))
+
+		for _, item := range res.Each(reflect.TypeOf(b1)) {
+			// 转换成Article对象
+			if t, ok := item.(RoomTextLive); ok {
+				fmt.Println("data : ", t.Data)
+			} else {
+				fmt.Println("err : ", ok)
+			}
+		}
+	}
+}
+
+type RoomTextLive struct {
+	Id        int64  `json:"match_id"`   // 赛事id
+	Time      string `json:"time"`       // 事件时间
+	EventType int    `json:"event_type"` // 事件类型
+	Data      string `json:"data"`       // 事件文本
+	Position  int8   `json:"position"`   // 事件發生方， 0-中立 1-主队 2-客队
+	Main      int8   `json:"main"`       // 是否重要事件 0-否 1-是
+}
+
+type RoomTextLiveSlice struct {
+	SentMessageStruct
+	TextLive []*RoomTextLive `json:"text_live"`
+}
+
+type RoomTextLiveMessage struct {
+	SentMessageStruct
+	Id         int64  `json:"match_id"`    // 赛事id
+	Time       string `json:"time"`        // 事件时间
+	Type       int8   `json:"type"`        // 事件类型
+	Data       string `json:"data"`        // 事件文本
+	Position   int8   `json:"position"`    // 事件發生方， 0-中立 1-主队 2-客队
+	Main       int8   `json:"main"`        // 是否重要事件 0-否 1-是
+	CreateTime string `json:"create_time"` // 創建時間
+}
+type SentMessageStruct struct {
+	Type    string `json:"type"`
+	Message string `default:"" json:"message,omitempty"`
 }
 
 func addOne(client *elastic.Client) {
@@ -89,11 +171,12 @@ func addOne(client *elastic.Client) {
 		Age:   18,
 		Birth: "1991-03-04",
 	}
-	res, err := client.Index().Index("go-test").Id("1").BodyJson(userInfo).Do(ctx)
+	res, err := client.Index().Index("go-test").Type("ABC").Id("1").BodyJson(userInfo).Do(ctx)
 	if err != nil {
 		fmt.Println("添加失败:%s", err)
+	} else {
+		fmt.Println("添加成功", res)
 	}
-	fmt.Println("添加成功", res)
 }
 
 func addMany(client *elastic.Client) {
