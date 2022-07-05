@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/jinzhu/copier"
 	"github.com/nats-io/nats.go"
 	"github.com/nats-io/stan.go"
 	"github.com/ronnielin8862/go-practice/globle"
@@ -10,22 +11,6 @@ import (
 	"strconv"
 	"time"
 )
-
-type ChatHistory struct {
-	Id         int64  `json:"id" gorm:"primaryKey;autoIncrement"` // bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-	Uid        int    `json:"uid"`                                //int(11) DEFAULT NULL COMMENT '用户id',
-	RoomId     int    `json:"room_id"`                            //varchar(100) DEFAULT NULL COMMENT '房间id',
-	CreateTime int64  `json:"create_time"`                        //datetime DEFAULT NULL,
-	Content    string `json:"content"`
-}
-
-type SendGiftReq struct {
-	Anchorid int   `json:"anchorid" validate:"required"`
-	Giftid   int   `json:"giftid" validate:"required"`
-	Liveid   int64 `json:"liveid"`
-	Count    int   `json:"count"`
-	Uid      int
-}
 
 func main() {
 	url := fmt.Sprintf("nats://127.0.0.1:4222")
@@ -36,24 +21,153 @@ func main() {
 		nats.Timeout(time.Second*10),
 		nats.PingInterval(time.Second*4),
 	)
-	//jetStreamPubTestForDDU(nc)
-	//natsStreamingForDDUMatchTextLive(nc)
-	//natsStreamingForDDUScoreLive(nc)
-	natsStreamingForDDUStatsLive(nc)
-}
-
-func natsStreamingForDDUScoreLive(nc *nats.Conn) {
 	NatsDB, err := stan.Connect("test-cluster", "natsClicent07", stan.NatsConn(nc),
 		stan.SetConnectionLostHandler(func(_ stan.Conn, reason error) {
 			fmt.Println("Connection lost, reason: ", reason)
 		}))
 	if err != nil {
-		fmt.Println("error by nats connect: %v", err)
+		fmt.Println("error by nats connect: ", err)
 	}
+	//jetStreamPubTestForDDU(nc,NatsDB)
+	//natsStreamingForDDUMatchTextLive(NatsDB)
+	//natsStreamingForDDUScoreLive(NatsDB)
+	//natsStreamingForDDUStatsLive(NatsDB)
+	//natsStreamingForDDULineup(NatsDB)
+	natsStreamingForDDUBasketballText(NatsDB)
+}
+
+func natsStreamingForDDUBasketballText(NatsDB stan.Conn) {
+
+	subject := fmt.Sprint(globle.BasketballTextLive)
+	fmt.Println("subject = ", subject)
+
+	data := generateBasketballData(wantRun)
+
+	lineupJson, err := json.Marshal(data)
+	//err = NatsDB.Publish(subject, lineupJson)
+	err = NatsDB.Publish(subject, lineupJson)
+	if err != nil {
+		fmt.Println("送不出去, err = ", err)
+	}
+
+	fmt.Println("publish success : ", string(lineupJson))
+	time.Sleep(3 * time.Second)
+}
+
+func generateBasketballData(wantRun int) (msgs []globle.BasketballText) {
+
+	for i := 1; i <= wantRun; i++ {
+		var m globle.BasketballText
+		m.MatchId = 6000098
+		m.Time = "10"
+		m.EventTeam = int8(i)
+		m.AwayScore = 444
+		m.HomeScore = i
+		m.Text = "23456"
+		msgs = append(msgs, m)
+	}
+	return msgs
+}
+
+func natsStreamingForDDULineup(NatsDB stan.Conn) {
+
+	subject := fmt.Sprint(globle.FootballLineupLive)
+	fmt.Println("subject = ", subject)
+	lineup := lineupLiveMock()
+
+	lineupJson, err := json.Marshal(lineup)
+	//err = NatsDB.Publish(subject, lineupJson)
+	err = NatsDB.Publish(subject, lineupLiveData2())
+	if err != nil {
+		fmt.Println("送不出去, err = ", err)
+	}
+
+	fmt.Println("publish success : ", string(lineupJson))
+	time.Sleep(3 * time.Second)
+}
+
+func lineupLiveMock() []globle.Lineup {
+	lineup := globle.Lineup{
+		MatchId: 1, Confirmed: 0, HomeFormation: "4-4-2", AwayFormation: "4-3-3",
+	}
+
+	var incidentsA *globle.Incidents
+	var incidentsB globle.Incidents
+	var incidentsC globle.Incidents
+	var incidentsD globle.Incidents
+
+	incidentsA = &globle.Incidents{
+		Type:       1,
+		Time:       "A",
+		Belong:     2,
+		HomeScore:  3,
+		AwayScore:  4,
+		ReasonType: 5,
+		Player:     globle.Player{PlayerId: 9, Name: "AAA"},
+		Assist1:    globle.Player{PlayerId: 10, Name: "BBB"},
+		InPlayer:   globle.Player{PlayerId: 12, Name: "DDD"},
+		OutPlayer:  globle.Player{PlayerId: 13, Name: "EEE"},
+	}
+
+	copier.Copy(&incidentsB, &incidentsA)
+	copier.Copy(&incidentsC, &incidentsA)
+	copier.Copy(&incidentsD, &incidentsA)
+
+	var lineupItemA *globle.LineupItem
+	var lineupItemB globle.LineupItem
+	var lineupItemC globle.LineupItem
+	var lineupItemD globle.LineupItem
+	lineupItemA = &globle.LineupItem{
+		LineupId:     1,
+		TeamId:       2,
+		First:        3,
+		Captain:      4,
+		Name:         "A",
+		Logo:         "B",
+		NationalLogo: "C",
+		ShirtNumber:  5,
+		Position:     "D",
+		X:            6,
+		Y:            7,
+		Rating:       "E",
+		Incidents:    nil,
+	}
+
+	lineupItemA.Incidents = append(lineupItemA.Incidents, *incidentsA)
+	lineupItemB.Incidents = append(lineupItemB.Incidents, incidentsB)
+	lineupItemB.Incidents = append(lineupItemB.Incidents, incidentsC)
+	lineupItemB.Incidents = append(lineupItemB.Incidents, incidentsD)
+
+	copier.Copy(&lineupItemB, &lineupItemA)
+	copier.Copy(&lineupItemC, &lineupItemA)
+	copier.Copy(&lineupItemD, &lineupItemA)
+	lineupItemB.LineupId = 11
+	lineupItemC.LineupId = 12
+	lineupItemD.LineupId = 13
+
+	lineup.Home = append(lineup.Home, *lineupItemA)
+	lineup.Away = append(lineup.Away, lineupItemB)
+	//lineup.Away = append(lineup.Away, lineupItemC)
+	//lineup.Away = append(lineup.Away, lineupItemD)
+
+	var lp []globle.Lineup
+	lineup2 := lineup
+	lp = append(lp, lineup2)
+	lineup2.MatchId = 2
+
+	return lp
+}
+
+func lineupLiveData2() []byte {
+	return []byte("[\n    {\n        \"match_id\": 6000098,\n        \"confirmed\": 1,\n        \"home_formation\": \"4-3-9\",\n        \"away_formation\": \"4-4-2\",\n        \"home\": [\n            {\n                \"id\": 1414339,\n                \"team_id\": 14702,\n                \"first\": 1,\n                \"captain\": 0,\n                \"name\": \"居琼·比雅尼·布林乔尔夫森3\",\n                \"logo\": \"\",\n                \"national_logo\": \"\",\n                \"shirt_number\": 16,\n                \"position\": \"\",\n                \"x\": 0,\n                \"y\": 0,\n                \"rating\": \"0.0\",\n                \"incidents\": [\n                    {\n                        \"type\": 1,\n                        \"time\": \"9\",\n                        \"belong\": 1,\n                        \"home_score\": 2,\n                        \"away_score\": 0,\n                        \"reason_type\": 0,\n                        \"player\": {\n                            \"id\": 1414339,\n                            \"name\": \"居琼·比雅尼·布林乔尔夫森\"\n                        },\n                        \"assist1\": {\n                            \"id\": 0,\n                            \"name\": \"\"\n                        },\n                        \"assist2\": {\n                            \"id\": 0,\n                            \"name\": \"\"\n                        },\n                        \"in_player\": {\n                            \"id\": 0,\n                            \"name\": \"\"\n                        },\n                        \"out_player\": {\n                            \"id\": 0,\n                            \"name\": \"\"\n                        }\n                    },\n                    {\n                        \"id\": 1414340,\n                        \"team_id\": 14702,\n                        \"first\": 1,\n                        \"captain\": 0,\n                        \"name\": \"埃尔瓦尔·鲍德温森\",\n                        \"logo\": \"\",\n                        \"national_logo\": \"\",\n                        \"shirt_number\": 18,\n                        \"position\": \"\",\n                        \"x\": 0,\n                        \"y\": 0,\n                        \"rating\": \"0.0\"\n                    },\n                    {\n                        \"type\": 1,\n                        \"time\": \"85\",\n                        \"belong\": 1,\n                        \"home_score\": 5,\n                        \"away_score\": 0,\n                        \"reason_type\": 0,\n                        \"player\": {\n                            \"id\": 1414339,\n                            \"name\": \"居琼·比雅尼·布林乔尔夫森\"\n                        },\n                        \"assist1\": {\n                            \"id\": 1513567,\n                            \"name\": \"西格弗斯·冈纳森·范纳尔\"\n                        },\n                        \"assist2\": {\n                            \"id\": 0,\n                            \"name\": \"\"\n                        },\n                        \"in_player\": {\n                            \"id\": 0,\n                            \"name\": \"\"\n                        },\n                        \"out_player\": {\n                            \"id\": 0,\n                            \"name\": \"\"\n                        }\n                    }\n                ]\n            },\n            {\n                \"id\": 1433617,\n                \"team_id\": 14702,\n                \"first\": 1,\n                \"captain\": 0,\n                \"name\": \"克里斯托弗·克里斯蒂安松\",\n                \"logo\": \"\",\n                \"national_logo\": \"\",\n                \"shirt_number\": 15,\n                \"position\": \"\",\n                \"x\": 0,\n                \"y\": 0,\n                \"rating\": \"0.0\"\n            }\n        ],\n        \"away\": [\n            {\n                \"id\": 1146124,\n                \"team_id\": 24328,\n                \"first\": 1,\n                \"captain\": 0,\n                \"name\": \"詹姆斯·戴尔3\",\n                \"logo\": \"https://cdn.sportnanoapi.com/football/player/3bad34d6db39da48c94665c7989d4f7c.png\",\n                \"national_logo\": \"\",\n                \"shirt_number\": 4,\n                \"position\": \"\",\n                \"x\": 0,\n                \"y\": 0,\n                \"rating\": \"0.3\",\n                \"incidents\": [\n                    {\n                        \"type\": 9,\n                        \"time\": \"46\",\n                        \"belong\": 2,\n                        \"home_score\": 3,\n                        \"away_score\": 0,\n                        \"reason_type\": 0,\n                        \"player\": {\n                            \"id\": 0,\n                            \"name\": \"\"\n                        },\n                        \"assist1\": {\n                            \"id\": 0,\n                            \"name\": \"\"\n                        },\n                        \"assist2\": {\n                            \"id\": 0,\n                            \"name\": \"\"\n                        },\n                        \"in_player\": {\n                            \"id\": 1553739,\n                            \"name\": \"haukur palsson\"\n                        },\n                        \"out_player\": {\n                            \"id\": 1146124,\n                            \"name\": \"詹姆斯·戴尔\"\n                        }\n                    }\n,{\n                        \"type\": 9,\n                        \"time\": \"46\",\n                        \"belong\": 2,\n                        \"home_score\": 3,\n                        \"away_score\": 0,\n                        \"reason_type\": 0,\n                        \"player\": {\n                            \"id\": 0,\n                            \"name\": \"\"\n                        },\n                        \"assist1\": {\n                            \"id\": 0,\n                            \"name\": \"\"\n                        },\n                        \"assist2\": {\n                            \"id\": 0,\n                            \"name\": \"\"\n                        },\n                        \"in_player\": {\n                            \"id\": 1553739,\n                            \"name\": \"haukur palsson\"\n                        },\n                        \"out_player\": {\n                            \"id\": 1146124,\n                            \"name\": \"詹姆斯·戴尔\"\n                        }\n                    }\n                ]\n            },\n            {\n                \"id\": 1145980,\n                \"team_id\": 24328,\n                \"first\": 1,\n                \"captain\": 0,\n                \"name\": \"什克尔岑·瓦西里1\",\n                \"logo\": \"\",\n                \"national_logo\": \"\",\n                \"shirt_number\": 11,\n                \"position\": \"\",\n                \"x\": 0,\n                \"y\": 0,\n                \"rating\": \"0.5\"\n            }\n        ]\n    }\n]")
+}
+
+func natsStreamingForDDUScoreLive(NatsDB stan.Conn) {
+
 	subject := fmt.Sprint(globle.FootballScoreLive)
 
 	for i := 1; i <= wantRun; i++ {
-		homeScore := Score{
+		homeScore := globle.Score{
 			Score:        i,
 			HalfScore:    2,
 			RedCard:      1,
@@ -62,7 +176,7 @@ func natsStreamingForDDUScoreLive(nc *nats.Conn) {
 			OTScore:      1,
 			PenaltyScore: 3,
 		}
-		awayScore := Score{
+		awayScore := globle.Score{
 			Score:        4,
 			HalfScore:    2,
 			RedCard:      1,
@@ -71,7 +185,7 @@ func natsStreamingForDDUScoreLive(nc *nats.Conn) {
 			OTScore:      1,
 			PenaltyScore: 3,
 		}
-		roomScore := RoomScoreLive{
+		roomScore := globle.RoomScoreLive{
 			Id:          6000098,
 			Status:      i,
 			HomeScore:   homeScore,
@@ -79,9 +193,9 @@ func natsStreamingForDDUScoreLive(nc *nats.Conn) {
 			KickOutTime: 1653249600,
 		}
 
-		mjs := []RoomScoreLive{roomScore}
+		mjs := []globle.RoomScoreLive{roomScore}
 		mj, _ := json.Marshal(mjs)
-		err = NatsDB.Publish(subject, mj)
+		err := NatsDB.Publish(subject, mj)
 		if err != nil {
 			fmt.Println("送不出去, err = ", err)
 		}
@@ -92,80 +206,71 @@ func natsStreamingForDDUScoreLive(nc *nats.Conn) {
 }
 
 var (
-	esCount = 0
-	wantRun = 1
+	esCount    = 0
+	statsCount = 1
+	wantRun    = 8
 )
 
-func natsStreamingForDDUStatsLive(nc *nats.Conn) {
-	NatsDB, err := stan.Connect("test-cluster", "natsClicent07", stan.NatsConn(nc),
-		stan.SetConnectionLostHandler(func(_ stan.Conn, reason error) {
-			fmt.Println("Connection lost, reason: ", reason)
-		}))
-	if err != nil {
-		fmt.Println("error by nats connect: ", err)
-	}
+func natsStreamingForDDUStatsLive(NatsDB stan.Conn) {
+	var (
+		statsCount = 9
+	)
+
 	subject := fmt.Sprint(globle.FootballStatsLive)
 	fmt.Println("subject = ", subject)
 	// 假資料組成
-	for i := 1; i <= wantRun; i++ {
-		msgs := statsLiveMock(i)
 
-		mj, _ := json.Marshal(msgs)
-		err = NatsDB.Publish(subject, mj)
-		if err != nil {
-			fmt.Println("送不出去, err = ", err)
-		}
+	msgs := statsLiveMock(statsCount)
 
-		time.Sleep(3 * time.Second)
+	mj, _ := json.Marshal(msgs)
+	err := NatsDB.Publish(subject, mj)
+	if err != nil {
+		fmt.Println("送不出去, err = ", err)
+	} else {
+		fmt.Println("publish success : ", string(mj))
 	}
+
+	time.Sleep(3 * time.Second)
+
 }
 
-func statsLiveMock(wantRun int) (msgs []RoomStatsLiveMessage) {
-	for i := 1; i <= esCount+wantRun; i++ {
-		msg := RoomStatsLiveMessage{
-			SentMessageStruct: SentMessageStruct{
-				Type: globle.StatusLive,
-			},
+func statsLiveMock(statsCount int) (msgs []globle.StatsLiveMessage) {
+	for i := 1; i <= statsCount; i++ {
+		stats := globle.StatsLiveMessage{
 			Id:   6000098,
-			Type: 3,
-			Home: 2,
-			Away: 3,
+			Type: wantRun,
+			Home: 4 + wantRun,
+			Away: 3 + wantRun,
 		}
-		msgs = append(msgs, msg)
+		msgs = append(msgs, stats)
 	}
-
-	fmt.Println("last msgs: ", msgs[esCount+wantRun-1])
 	return msgs
 }
 
-func natsStreamingForDDUMatchTextLive(nc *nats.Conn) {
-	NatsDB, err := stan.Connect("test-cluster", "natsClicent07", stan.NatsConn(nc),
-		stan.SetConnectionLostHandler(func(_ stan.Conn, reason error) {
-			fmt.Println("Connection lost, reason: %v\n", reason)
-		}))
-	if err != nil {
-		fmt.Println("error by nats connect: %v", err)
-	}
+func natsStreamingForDDUMatchTextLive(NatsDB stan.Conn) {
+
 	subject := fmt.Sprint(globle.FootballTextLive)
 	fmt.Println("subject = ", subject)
 	// 假資料組成
-	for i := 1; i <= wantRun; i++ {
-		msgs := textLiveMock(i)
 
-		mj, _ := json.Marshal(msgs)
-		err = NatsDB.Publish(subject, mj)
-		if err != nil {
-			fmt.Println("送不出去, err = ", err)
-		}
+	msgs := textLiveMock(wantRun)
 
-		time.Sleep(3 * time.Second)
+	mj, _ := json.Marshal(msgs)
+	err := NatsDB.Publish(subject, mj)
+	if err != nil {
+		fmt.Println("送不出去, err = ", err)
+	} else {
+		fmt.Println("publish success : ", string(mj))
 	}
+
+	time.Sleep(3 * time.Second)
+
 }
 
-func textLiveMock(wantRun int) (msgs []RoomTextLiveMessage) {
+func textLiveMock(wantRun int) (msgs []globle.RoomTextLiveMessage) {
 	for i := 1; i <= esCount+wantRun; i++ {
-		msg := RoomTextLiveMessage{
-			SentMessageStruct: SentMessageStruct{
+		msg := globle.RoomTextLiveMessage{
+			SentMessageStruct: globle.SentMessageStruct{
 				Type:    globle.TextLive,
 				Message: "test",
 			},
@@ -179,61 +284,13 @@ func textLiveMock(wantRun int) (msgs []RoomTextLiveMessage) {
 		msgs = append(msgs, msg)
 	}
 
-	fmt.Println("last msgs: ", msgs[esCount+wantRun-1])
 	return msgs
-}
-
-type RoomScoreLiveMessage struct {
-	SentMessageStruct
-	ScoreLive RoomScoreLive `json:"score_live"`
-}
-
-type RoomScoreLive struct {
-	Id          int   `json:"match_id"`
-	Status      int   `json:"match_status"`
-	HomeScore   Score `json:"home_score"`
-	AwayScore   Score `json:"away_score"`
-	KickOutTime int64 `json:"kick_out_time"`
-}
-
-type Score struct {
-	Score        int `json:"score"`
-	HalfScore    int `json:"half_score"`
-	RedCard      int `json:"red_card"`
-	YellowCard   int `json:"yellow_card"`
-	CornerKick   int `json:"corner_kick"`
-	OTScore      int `json:"ot_score"`
-	PenaltyScore int `json:"penalty_score"`
-}
-
-type RoomStatsLiveMessage struct {
-	SentMessageStruct
-	Id   int64 `json:"match_id"`
-	Type int   `json:"type"`
-	Home int   `json:"home"`
-	Away int   `json:"away"`
-}
-
-type RoomTextLiveMessage struct {
-	SentMessageStruct
-	Id         int64  `json:"match_id"`    // 赛事id
-	Time       string `json:"time"`        // 事件时间
-	Type       int8   `json:"type"`        // 事件类型
-	Data       string `json:"data"`        // 事件文本
-	Position   int8   `json:"position"`    // 事件發生方， 0-中立 1-主队 2-客队
-	Main       int8   `json:"main"`        // 是否重要事件 0-否 1-是
-	CreateTime int64  `json:"create_time"` // 創建時間
-}
-
-type SentMessageStruct struct {
-	Type    string `json:"type"`
-	Message string `default:"" json:"message,omitempty"`
 }
 
 func generalPublish(nc *nats.Conn) {
 
 	// 发布-订阅 模式，向 test1 发布一个 `Hello World` 数据
-	chat := ChatHistory{
+	chat := globle.ChatHistory{
 		Id:         666,
 		Uid:        555,
 		RoomId:     444,
@@ -247,7 +304,7 @@ func generalPublish(nc *nats.Conn) {
 	}
 	_ = nc.Publish("chatRecordChannel", []byte(chatMarshal))
 
-	gift := SendGiftReq{
+	gift := globle.SendGiftReq{
 		Anchorid: 666,
 		Giftid:   555,
 		Liveid:   444,
@@ -361,7 +418,7 @@ func jetStreamPubTestForDDU(nc *nats.Conn) {
 	i := 0
 	for {
 		// 发布-订阅 模式，向 test1 发布一个 `Hello World` 数据
-		chat := ChatHistory{
+		chat := globle.ChatHistory{
 			Id:         int64(i),
 			Uid:        555,
 			RoomId:     444,
@@ -379,7 +436,7 @@ func jetStreamPubTestForDDU(nc *nats.Conn) {
 		}
 		fmt.Println("send chat ", i)
 
-		gift := SendGiftReq{
+		gift := globle.SendGiftReq{
 			Anchorid: i,
 			Giftid:   555,
 			Liveid:   444,
@@ -412,18 +469,10 @@ func jetStreamPubTestForDDU(nc *nats.Conn) {
 	}
 }
 
-func natsStreamingForDDU(nc *nats.Conn) {
-
-	NatsDB, err := stan.Connect("test-cluster", "natsClicent01", stan.NatsConn(nc),
-		stan.SetConnectionLostHandler(func(_ stan.Conn, reason error) {
-			fmt.Println("Connection lost, reason: %v\n", reason)
-		}))
-	if err != nil {
-		fmt.Println("error by nats connect: %v", err)
-	}
+func natsStreamingForDDU(NatsDB stan.Conn) {
 
 	fmt.Println("JetStream.ChatRecordSubject = ", "DDDFDFDFDFDFDFDF")
-	err = NatsDB.Publish("JetStream.ChatRecordSubject", []byte("DDDFDFDFDFDFDFDF"))
+	err := NatsDB.Publish("JetStream.ChatRecordSubject", []byte("DDDFDFDFDFDFDFDF"))
 	if err != nil {
 		fmt.Println("送不出去, err = ", err)
 	}
@@ -453,7 +502,7 @@ func natsStreamingForDDU(nc *nats.Conn) {
 func ChatRecordHandler(msg *stan.Msg) {
 	fmt.Println("收到聊天记订阅消息:%v", string(msg.Data))
 
-	var chatHistory ChatHistory
+	var chatHistory globle.ChatHistory
 	err := json.Unmarshal(msg.Data, &chatHistory)
 	if err != nil {
 		fmt.Println("SubMessage chatRecord InsertChatHistory err [%v]", err)
