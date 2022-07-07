@@ -40,11 +40,18 @@ type (
 		PenaltyScore int `json:"penalty_score"`
 	}
 
-	StatsLiveMessage struct {
+	FootballStatsLiveMessage struct {
 		Id   int64 `json:"match_id"`
 		Type int   `json:"type"`
 		Home int   `json:"home"`
 		Away int   `json:"away"`
+	}
+
+	BasketStatsLiveMessage struct {
+		Id   int64   `json:"match_id"`
+		Type int     `json:"type"`
+		Home float64 `json:"home"`
+		Away float64 `json:"away"`
 	}
 
 	RoomTextLiveMessage struct {
@@ -58,16 +65,17 @@ type (
 		CreateTime int64  `json:"create_time"` // 創建時間
 	}
 
-	BasketballText struct {
-		MatchId    int64  `json:"match_id"`    // 篮球ID
-		Time       string `json:"time"`        // 时间
-		EventTeam  int8   `json:"event_team"`  // 事件发生在团队（0-中立，1-主队，2-客队
+	TextLiveStruct struct {
+		Id         int    `json:"match_id"`    // 赛事id
+		Time       string `json:"time"`        // 事件时间
+		Type       int8   `json:"type"`        // 事件类型
+		Data       string `json:"data"`        // 事件文本
+		Position   int8   `json:"position"`    // 事件發生方， 0-中立 1-主队 2-客队
+		Main       int8   `json:"main"`        // 是否重要事件 0-否 1-是
 		AwayScore  int    `json:"away_score"`  // 客队比分
 		HomeScore  int    `json:"home_score"`  // 主队比分
-		Text       string `json:"text"`        // 文字内容
 		CreateTime int64  `json:"create_time"` // 創建時間
 	}
-
 	SentMessageStruct struct {
 		Type    string `json:"type"`
 		Message string `default:"" json:"message,omitempty"`
@@ -112,5 +120,45 @@ type (
 	Player struct {
 		PlayerId int    `json:"id"`   // 球员id
 		Name     string `json:"name"` // 中文名称
+	}
+	BasketballScore struct {
+		MatchId     int   `json:"match_id"`     // 比赛id
+		MatchStatus int   `json:"match_status"` // 比赛状态，详见状态码->比赛状态
+		TimeLeft    int   `json:"time_left"`    // 小节剩余时间(秒)
+		AwayScore   []int `json:"away_score"`   // 客队比分
+		HomeScore   []int `json:"home_score"`   // 主队比分 [23, 32, 22, 34, 0 ], 数组下标 （0 第一节比分 1 第二节比分，2 第三节比分，3 //第4节分数 4 //加时分数）
+	}
+
+	BasketballRecord struct {
+		MatchId      int          `json:"match_id"`       // 比赛ID
+		Home         []PlayerInfo `json:"home"`           // 主队阵容
+		Away         []PlayerInfo `json:"away"`           // 客队真人
+		HomeTimeLine TimeLineItem `json:"home_time_line"` // 主队在场持续时间统计
+		AwayTimeLine TimeLineItem `json:"away_time_line"` // 客队在场持续时间统计
+	}
+	PlayerInfo struct {
+		Id       int64        `json:"id"`       // 球员id
+		NameZh   string       `json:"name_zh"`  // 球员中文名称
+		NameZht  string       `json:"name_zht"` // 球员粤语名称
+		NameEn   string       `json:"name_en"`  // 球员英文名称
+		Logo     string       `json:"logo"`     // 球员logo
+		Number   string       `json:"number"`   // 球衣号
+		TimeLine TimeLineItem `json:"timeline"` // 在场持续时间统计
+	}
+	TimeLineItem struct {
+		HitCount          int `json:"hit_count"`          // 命中次数
+		ShotCount         int `json:"shot_count"`         // 投篮次数
+		Goal3Score        int `json:"goal_3_score"`       // 三分球投篮命中次数
+		Goal3ScoreCount   int `json:"goal_3_score_count"` // 三分投篮次数
+		FQHitCount        int `json:"fq_hit_count"`       // 罚球命中次数
+		FQCount           int `json:"fq_count"`           // 罚球投篮次数
+		OffensiveRebounds int `json:"offensive_rebounds"` // 进攻篮板
+		DefensiveRebounds int `json:"defensive_rebounds"` // 防守篮板
+		TotalRebounds     int `json:"total_rebounds"`     // 总的篮板
+		Assists           int `json:"assists"`            // 助攻数
+		Steals            int `json:"steals"`             // 抢断数
+		Caps              int `json:"caps"`               // 盖帽数
+		MistakeCount      int `json:"mistake_count"`      // 失误次数
+		Fouls             int `json:"fouls"`              // 个人犯规次数
 	}
 )
