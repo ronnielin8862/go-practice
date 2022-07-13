@@ -14,8 +14,8 @@ import (
 )
 
 func main() {
-	//url := fmt.Sprintf("nats://127.0.0.1:4222")
-	url := fmt.Sprintf("nats://%s:%s", "52.221.194.38", "4344")
+	url := fmt.Sprintf("nats://127.0.0.1:4222")
+	//url := fmt.Sprintf("nats://%s:%s", "52.221.194.38", "4344")
 	nc, _ := nats.Connect(
 		url,
 		nats.UserInfo("nats%3admin##1", "oscars3higehaohaizi"),
@@ -33,10 +33,10 @@ func main() {
 	//natsStreamingForDDUMatchTextLive(NatsDB)
 	//natsStreamingForDDUScoreLive(NatsDB)
 	//natsStreamingForDDUStatsLive(NatsDB)
-	natsStreamingForDDULineup(NatsDB)
+	//natsStreamingForDDULineup(NatsDB)
 	//natsStreamingForDDUBasketballText(NatsDB)
 	//natsStreamingForDDUBasketballScore(NatsDB)
-	//natsStreamingForDDUBasketballstats(NatsDB)
+	natsStreamingForDDUBasketballstats(NatsDB)
 	//natsStreamingForDDUBasketballTimeStats(NatsDB)
 }
 
@@ -80,7 +80,7 @@ func basketBallStatsLiveMock() (msgs []globle.BasketStatsLiveMessage) {
 		stats := globle.BasketStatsLiveMessage{
 			Id:   6000098,
 			Type: i,
-			Home: 3.36,
+			Home: float64(i),
 			Away: float64(3 + wantRun),
 		}
 		msgs = append(msgs, stats)
@@ -118,7 +118,7 @@ func generateBasketballScore(run int) (BsScores []globle.BasketballScore) {
 			MatchId:     6000098,
 			MatchStatus: 2,
 			TimeLeft:    15 - i,
-			AwayScore:   []int{3, 2, 3, 4, 5},
+			AwayScore:   []int{6, 2, 3, 4, 5},
 			HomeScore:   []int{1, 2, 3, 4, 5},
 		}
 
