@@ -87,10 +87,50 @@ func main() {
 	} else {
 		fmt.Println("连接成功")
 	}
-	//addOne(client)
+	//add(client)
 	//findMany(client)
 	//count(client)
-	filteAndDelete(client)
+	//filteAndDelete(client)
+	//findByQuery(client)
+	//deleteByQuery(client)
+	CleanChatHistory(client)
+}
+
+func deleteByQuery(client *elastic.Client) {
+	bq := elastic.NewBoolQuery().Filter(elastic.NewRangeQuery("age").Lt(19))
+	res, err := client.DeleteByQuery("go-test").Query(bq).Do(context.Background())
+	if err != nil {
+		fmt.Println("删除失败:%s", err)
+		return
+	}
+	fmt.Println("删除成功", res.Total)
+}
+
+func CleanChatHistory(client *elastic.Client) {
+	//t := time.Now().Unix() - 60*60*24
+	q := elastic.NewBoolQuery().Filter(elastic.NewRangeQuery("create_time").Lt(1))
+	do, err := client.DeleteByQuery("es_chat_history").Query(q).Do(context.Background())
+	if err != nil {
+		fmt.Println("删除失败:%s", err)
+	} else {
+		fmt.Println("删除成功", do.Total)
+	}
+}
+
+func findByQuery(client *elastic.Client) {
+	bq := elastic.NewBoolQuery().Filter(elastic.NewRangeQuery("create_time").Gt(1657959002))
+	do, err := client.Search("match_live_text_3666726").Query(bq).Size(100).Do(context.Background())
+	//  todo 測試刪除
+
+	if err != nil {
+		fmt.Println("查询失败: ", err)
+	} else {
+		//fmt.Println("查询成功: ")
+		//for _, hit := range do.Hits.Hits {
+		//	fmt.Println(hit.Id, hit.Index, string(hit.Source))
+		//}
+		fmt.Println("len do = ", len(do.Hits.Hits))
+	}
 }
 
 func filteAndDelete(client *elastic.Client) {
@@ -138,7 +178,8 @@ func filteAndDelete(client *elastic.Client) {
 }
 
 func count(client *elastic.Client) {
-	res, err := client.Count("football_text_live_3754340").Do(context.Background())
+	bq := elastic.NewBoolQuery().Filter(elastic.NewRangeQuery("create_time").Gt(1657959102))
+	res, err := client.Count("match_live_text_3666726").Query(bq).Do(context.Background())
 	if err != nil {
 		fmt.Println("查询失败:%s", err)
 		return
@@ -150,11 +191,12 @@ func findMany(client *elastic.Client) {
 
 	// 创建查询语句
 	//query := elastic.NewMatchAllQuery()
-	// 查询
+	// 查询®
 	//sourceContext := elastic.FetchSourceContext{}
 
 	// 分頁搜索
-	res, err := client.Search("football_text_live_3754340").Size(3).From(3).Do(context.Background())
+	sort := elastic.NewFieldSort("create_time").Order(false)
+	res, err := client.Search("match_live_text_3666726").Size(3).SortBy(sort).Do(context.Background())
 
 	if err != nil {
 		fmt.Println("查询失败:%s", err)
@@ -207,21 +249,26 @@ type SentMessageStruct struct {
 	Message string `default:"" json:"message,omitempty"`
 }
 
-func addOne(client *elastic.Client) {
+func add(client *elastic.Client) {
 
 	//client, _ := connectEs()
 	ctx := context.Background()
-	// 创建userInfo
-	userInfo := UserInfo{
-		Name:  "张三！",
-		Age:   18,
-		Birth: "1991-03-04",
-	}
-	res, err := client.Index().Index("go-test").Type("ABC").Id("1").BodyJson(userInfo).Do(ctx)
-	if err != nil {
-		fmt.Println("添加失败:%s", err)
-	} else {
-		fmt.Println("添加成功", res)
+	for i := 0; i <= 70; i++ {
+		// 创建userInfo
+		userInfo := UserInfo{
+			Name:  "张三！",
+			Age:   18,
+			Birth: "1991-03-04",
+		}
+		_, err := client.Index().Index("go-test").BodyJson(userInfo).Do(ctx)
+		if err != nil {
+
+			if err != nil {
+				fmt.Println("添加失败:%s", err)
+			} else {
+				fmt.Println("添加成功", i)
+			}
+		}
 	}
 }
 

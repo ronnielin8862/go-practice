@@ -36,11 +36,11 @@ func main() {
 	//natsStreamingForDDULineup(NatsDB)
 	//natsStreamingForDDUBasketballText(NatsDB)
 	//natsStreamingForDDUBasketballScore(NatsDB)
-	natsStreamingForDDUBasketballstats(NatsDB)
-	//natsStreamingForDDUBasketballTimeStats(NatsDB)
+	//natsStreamingForDDUBasketballstats(NatsDB)
+	natsStreamingForDDUBasketballRecord(NatsDB)
 }
 
-func natsStreamingForDDUBasketballTimeStats(NatsDB stan.Conn) {
+func natsStreamingForDDUBasketballRecord(NatsDB stan.Conn) {
 	subject := fmt.Sprint(globle.BasketballRecordLive)
 	fmt.Println("subject = ", subject)
 
@@ -132,7 +132,7 @@ func natsStreamingForDDUBasketballText(NatsDB stan.Conn) {
 	subject := fmt.Sprint(globle.BasketballTextLive)
 	fmt.Println("subject = ", subject)
 
-	data := generateBasketballData(wantRun)
+	data := generateBasketballData(5)
 
 	lineupJson, err := json.Marshal(data)
 	//err = NatsDB.Publish(subject, lineupJson)
@@ -147,17 +147,29 @@ func natsStreamingForDDUBasketballText(NatsDB stan.Conn) {
 
 func generateBasketballData(wantRun int) (msgs []globle.TextLiveStruct) {
 
-	for i := 1; i <= wantRun; i++ {
+	for i := wantRun - 1; i >= 0; i-- {
 		var m globle.TextLiveStruct
-		m.Id = 6000098
-		m.Time = "10"
+		m.Id = 3666736
+		m.Time = strconv.Itoa(i)
 		m.Position = int8(i)
-		m.AwayScore = 444
+		m.AwayScore = i
 		m.HomeScore = i
 		m.Data = "23456"
 		msgs = append(msgs, m)
 	}
 	return msgs
+
+	//for i := 1; i <= wantRun; i++ {
+	//	var m globle.TextLiveStruct
+	//	m.Id = 3666736
+	//	m.Time = "10"
+	//	m.Position = int8(i)
+	//	m.AwayScore = wantRun
+	//	m.HomeScore = i
+	//	m.Data = "23456"
+	//	msgs = append(msgs, m)
+	//}
+	//return msgs
 }
 
 func natsStreamingForDDULineup(NatsDB stan.Conn) {
