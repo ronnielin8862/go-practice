@@ -37,7 +37,34 @@ func main() {
 	//natsStreamingForDDUBasketballText(NatsDB)
 	//natsStreamingForDDUBasketballScore(NatsDB)
 	//natsStreamingForDDUBasketballstats(NatsDB)
-	natsStreamingForDDUBasketballRecord(NatsDB)
+	//natsStreamingForDDUBasketballRecord(NatsDB)
+	natStreamingForDDUQuiz(NatsDB)
+}
+
+func natStreamingForDDUQuiz(nats stan.Conn) {
+	subject := fmt.Sprint(globle.LiveStreamConst)
+	fmt.Println("subject = ", subject)
+
+	data := generateQuiz()
+	marshal, _ := json.Marshal(data)
+
+	err := nats.Publish(subject, marshal)
+	if err != nil {
+		fmt.Println("送不出去, err = ", err)
+	}
+	time.Sleep(3 * time.Second)
+}
+
+func generateQuiz() globle.LiveStream {
+	var quiz globle.LiveStream
+	quiz.RoomId = 6000098
+	quiz.Function = globle.QuizConst
+	quiz.Content.Status = 1
+	quiz.Content.AmountList = []int{1, 2}
+	quiz.Content.ItemNum = 3
+	quiz.Content.MinBet = 4
+	quiz.Content.PeopleNumList = []int{5, 7}
+	return quiz
 }
 
 func natsStreamingForDDUBasketballRecord(NatsDB stan.Conn) {

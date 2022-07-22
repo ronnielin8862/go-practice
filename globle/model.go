@@ -161,4 +161,18 @@ type (
 		MistakeCount      int `json:"mistake_count"`      // 失误次数
 		Fouls             int `json:"fouls"`              // 个人犯规次数
 	}
+
+	LiveStream struct {
+		RoomId   int         `json:"id"`       // 房间id
+		Function string      `json:"function"` // 功能类型，直播、点播
+		Content  QuizContent `json:"message"`  // 消息
+	}
+
+	QuizContent struct {
+		ItemNum       int   `json:"ItemNum"`
+		Status        int   `json:"Status"`
+		PeopleNumList []int `json:"PeopleNumList"`
+		AmountList    []int `json:"AmountList"`
+		MinBet        int   `json:"MinBet"`
+	}
 )

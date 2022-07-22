@@ -14,4 +14,9 @@ const (
 	FootballScoreLive  = "score_live.football"
 	FootballStatsLive  = "stats_live.football"
 	FootballLineupLive = "lineup_live.football"
+
+	LiveStreamConst = "live_stream" // 直播間相關
+
+	// 直播間功能
+	QuizConst = "quiz"
 )
