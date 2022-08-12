@@ -14,7 +14,10 @@ func main() {
 	heads := makeListNode(ListNode{}, head)
 	result := reverseList(heads)
 
-	fmt.Println(result.Val)
+	for r := result; r != nil; r = r.Next {
+		fmt.Println(r.Val)
+	}
+
 	//fmt.Println(result.Next.Val)
 	//fmt.Println(result.Next.Next.Val)
 	//fmt.Println(result.Next.Next.Next.Val)
@@ -46,19 +49,5 @@ func reverseList(head *ListNode) *ListNode {
 	p := reverseList(head.Next)
 	head.Next.Next = head
 	head.Next = nil
-	//head = nil
 	return p
 }
-
-//var array []int
-//
-//func reverseList1(head *ListNode) *ListNode {
-//	if head == nil {
-//		return head
-//	}
-//	listNode := reverseList(head)
-//	array = append(array, head.Val)
-//
-//
-//	return head
-//}

@@ -7,6 +7,7 @@ import (
 	"github.com/nats-io/nats.go"
 	"github.com/nats-io/stan.go"
 	"github.com/ronnielin8862/go-practice/globle"
+	"github.com/spf13/cast"
 	"io/ioutil"
 	"log"
 	"strconv"
@@ -14,8 +15,9 @@ import (
 )
 
 func main() {
-	url := fmt.Sprintf("nats://127.0.0.1:4222")
-	//url := fmt.Sprintf("nats://%s:%s", "52.221.194.38", "4344")
+	//url := fmt.Sprintf("nats://127.0.0.1:4222")
+	url := fmt.Sprintf("nats://%s:%s", "52.221.194.38", "4344") //test1
+	//url := fmt.Sprintf("nats://%s:%s", "43.155.65.38", "4344") //test3
 	nc, _ := nats.Connect(
 		url,
 		nats.UserInfo("nats%3admin##1", "oscars3higehaohaizi"),
@@ -29,7 +31,7 @@ func main() {
 	if err != nil {
 		fmt.Println("error by nats connect: ", err)
 	}
-	//jetStreamPubTestForDDU(nc,NatsDB)
+	//jetStreamPubTestForDDU(nc, NatsDB)
 	//natsStreamingForDDUMatchTextLive(NatsDB)
 	//natsStreamingForDDUScoreLive(NatsDB)
 	//natsStreamingForDDUStatsLive(NatsDB)
@@ -39,31 +41,262 @@ func main() {
 	//natsStreamingForDDUBasketballstats(NatsDB)
 	//natsStreamingForDDUBasketballRecord(NatsDB)
 	natStreamingForDDUQuiz(NatsDB)
+	//natStreamingForDDUIndex(NatsDB)
+	//	natStreamingForDDUQuizPrompt(NatsDB)
+}
+
+func natStreamingForDDUQuizPrompt(db stan.Conn) {
+	subject := fmt.Sprint(globle.LiveStreamConst)
+	d := generateQuizPrompt()
+	marshal, _ := json.Marshal(d)
+	//s := "{\"id\":6000098,\"function\":\"quiz_prompt\",\"uid\":6000207,\"message\":\"{\"ItemNum\":3,\"Status\":9,\"PeopleNumList\":[5,7],\"AmountList\":[1,2],\"MinBet\":4}\"}"
+	err := db.Publish(subject, []byte(marshal))
+	if err != nil {
+		fmt.Println("送不出去, err = ", err)
+	} else {
+		fmt.Println("publish success : ", string(marshal))
+	}
+	time.Sleep(3 * time.Second)
+}
+
+func generateQuizPrompt() globle.LiveStream {
+	var quiz globle.LiveStream
+	quiz.RoomId = 6000098
+	quiz.Function = globle.QuizPromptConst
+	quiz.Uid = 6000207
+	quiz.Content = "1234567890"
+	return quiz
+}
+
+func natStreamingForDDUIndex(nats stan.Conn) {
+	subject := fmt.Sprint(globle.FootballIndexLive)
+	fmt.Println("subject = ", subject)
+
+	//data := generateIndexFirst()
+	for i := 0; i <= 0; i++ {
+		//data := generateIndex2(i)
+		//marshal, _ := json.Marshal(data)
+
+		//marshal := "[{\"type\":\"indexLive\",\"message\":[{\"company_id\":13,\"exponential_type\":\"eu\",\"odds_1\":\"2.7\",\"odds_2\":\"2.2\",\"odds_3\":\"3.55\",\"change_time\":1659682047},{\"company_id\":13,\"exponential_type\":\"eu\",\"odds_1\":\"2.7\",\"odds_2\":\"2.25\",\"odds_3\":\"3.55\",\"change_time\":1659682013}]}]"
+		marshal := "[{\"type\":\"indexLive\",\"message\":[{\"company_id\":13,\"exponential_type\":\"eu\",\"odds_1\":\"2.7\",\"odds_2\":\"2.2\",\"odds_3\":\"3.55\",\"change_time\":1659682047}]}]"
+
+		//err := nats.Publish(subject, marshal)
+		err := nats.Publish(subject, []byte(marshal))
+		if err != nil {
+			fmt.Println("送不出去, err = ", err)
+		} else {
+			fmt.Println("publish success : ", string(marshal))
+		}
+		time.Sleep(5 * time.Second)
+	}
+}
+
+func generateIndex2(s int) (ar []globle.IndexNats) {
+	a := s
+	for i := 0; i <= 0; i++ {
+		var index globle.IndexNats
+		index.CompanyId = 7
+		index.ExponentialType = "eu"
+		index.Odds1 = strconv.Itoa(a)
+		index.Odds2 = strconv.Itoa(a)
+		index.Odds3 = strconv.Itoa(a)
+		index.ExponentialScore = "8"
+		index.MatchId = 6000098
+		index.CompetitionTime = "2019-01-01 00:00:00"
+		index.MatchStatus = 6
+		index.ChangeTime = int64(a)
+		ar = append(ar, index)
+
+		var index1 globle.IndexNats
+		index1.CompanyId = 7
+		index1.ExponentialType = "asia"
+		index1.Odds1 = strconv.Itoa(a)
+		index1.Odds2 = cast.ToString(-0.2)
+		index1.Odds3 = strconv.Itoa(a)
+		index1.ExponentialScore = "5"
+		index1.MatchId = 6000098
+		index1.CompetitionTime = "2019-01-01 00:00:00"
+		index1.MatchStatus = i
+		index1.ChangeTime = int64(a)
+		ar = append(ar, index1)
+
+		var index2 globle.IndexNats
+		index2.CompanyId = 7
+		index2.ExponentialType = "cr"
+		index2.Odds1 = strconv.Itoa(a)
+		index2.Odds2 = strconv.Itoa(a)
+		index2.Odds3 = strconv.Itoa(a)
+		index2.ExponentialScore = "5"
+		index2.MatchId = 6000098
+		index2.CompetitionTime = "2019-01-01 00:00:00"
+		index2.MatchStatus = i
+		index2.ChangeTime = int64(a)
+		ar = append(ar, index2)
+
+		var index3 globle.IndexNats
+		index3.CompanyId = 8
+		index3.ExponentialType = "cr"
+		index3.Odds1 = strconv.Itoa(a)
+		index3.Odds2 = strconv.Itoa(a)
+		index3.Odds3 = strconv.Itoa(a)
+		index3.ExponentialScore = "5"
+		index3.MatchId = 6000098
+		index3.CompetitionTime = "2019-01-01 00:00:00"
+		index3.MatchStatus = i
+		index3.ChangeTime = int64(a)
+		ar = append(ar, index3)
+
+		var index4 globle.IndexNats
+		index4.CompanyId = 8
+		index4.ExponentialType = "eu"
+		index4.Odds1 = strconv.Itoa(a)
+		index4.Odds2 = strconv.Itoa(a)
+		index4.Odds3 = strconv.Itoa(a)
+		index4.ExponentialScore = "5"
+		index4.MatchId = 6000099
+		index4.CompetitionTime = "2019-01-01 00:00:00"
+		index4.MatchStatus = i
+		index4.ChangeTime = int64(a)
+		ar = append(ar, index4)
+
+		var index5 globle.IndexNats
+		index5.CompanyId = 8
+		index5.ExponentialType = "asia"
+		index5.Odds1 = strconv.Itoa(a)
+		index5.Odds2 = cast.ToString(0.2)
+		index5.Odds3 = strconv.Itoa(a)
+		index5.ExponentialScore = "5"
+		index5.MatchId = 6000098
+		index5.CompetitionTime = "2019-01-01 00:00:00"
+		index5.MatchStatus = i
+		index5.ChangeTime = int64(a)
+		ar = append(ar, index5)
+
+		var index6 globle.IndexNats
+		index6.CompanyId = 6
+		index6.ExponentialType = "cr"
+		index6.Odds1 = strconv.Itoa(a)
+		index6.Odds2 = strconv.Itoa(a)
+		index6.Odds3 = strconv.Itoa(a)
+		index6.ExponentialScore = "5"
+		index6.MatchId = 6000098
+		index6.CompetitionTime = "2019-01-01 00:00:00"
+		index6.MatchStatus = i
+		index6.ChangeTime = int64(a)
+		ar = append(ar, index6)
+
+		var index7 globle.IndexNats
+		index7.CompanyId = 6
+		index7.ExponentialType = "eu"
+		index7.Odds1 = strconv.Itoa(a)
+		index7.Odds2 = strconv.Itoa(a)
+		index7.Odds3 = strconv.Itoa(a)
+		index7.ExponentialScore = "5"
+		index7.MatchId = 6000099
+		index7.CompetitionTime = "2019-01-01 00:00:00"
+		index7.MatchStatus = i
+		index7.ChangeTime = int64(a)
+		ar = append(ar, index7)
+
+		var index8 globle.IndexNats
+		index8.CompanyId = 6
+		index8.ExponentialType = "asia"
+		index8.Odds1 = strconv.Itoa(a)
+		index8.Odds2 = strconv.Itoa(a)
+		index8.Odds3 = strconv.Itoa(a)
+		index8.ExponentialScore = "5"
+		index8.MatchId = 6000098
+		index8.CompetitionTime = "2019-01-01 00:00:00"
+		index8.MatchStatus = i
+		index8.ChangeTime = int64(a)
+		ar = append(ar, index8)
+	}
+	return ar
+}
+
+func generateIndexFirst() (ar []globle.IndexNats) {
+	a := 1
+	for i := 0; i <= 0; i++ {
+		var index globle.IndexNats
+		index.CompanyId = 99
+		index.ExponentialType = "eu"
+		index.Odds1 = strconv.Itoa(a)
+		index.Odds2 = strconv.Itoa(a)
+		index.Odds3 = strconv.Itoa(a)
+		index.ExponentialScore = "5"
+		index.MatchId = 6000098
+		index.CompetitionTime = "2019-01-01 00:00:00"
+		index.MatchStatus = i
+		index.ChangeTime = 4
+		ar = append(ar, index)
+
+		var index1 globle.IndexNats
+		index1.CompanyId = 99
+		index1.ExponentialType = "asia"
+		index1.Odds1 = strconv.Itoa(a)
+		index1.Odds2 = strconv.Itoa(a)
+		index1.Odds3 = strconv.Itoa(a)
+		index1.ExponentialScore = "5"
+		index1.MatchId = 6000098
+		index1.CompetitionTime = "2019-01-01 00:00:00"
+		index1.MatchStatus = i
+		index1.ChangeTime = 4
+		ar = append(ar, index1)
+
+		var index2 globle.IndexNats
+		index2.CompanyId = 99
+		index2.ExponentialType = "cr"
+		index2.Odds1 = strconv.Itoa(a)
+		index2.Odds2 = strconv.Itoa(a)
+		index2.Odds3 = strconv.Itoa(a)
+		index2.ExponentialScore = "5"
+		index2.MatchId = 6000098
+		index2.CompetitionTime = "2019-01-01 00:00:00"
+		index2.MatchStatus = i
+		index2.ChangeTime = 4
+		ar = append(ar, index2)
+
+	}
+	return ar
 }
 
 func natStreamingForDDUQuiz(nats stan.Conn) {
 	subject := fmt.Sprint(globle.LiveStreamConst)
 	fmt.Println("subject = ", subject)
 
-	data := generateQuiz()
-	marshal, _ := json.Marshal(data)
+	//data := generateQuiz()
+	//marshal, _ := json.Marshal(data)
+	//tempMsg := "{\"function\":\"quiz_prompt\",\"id\":0,\"message\":\"{\\\"win\\\":1,\\\"title\\\":\\\"这个问题的A是正确答案吗？\\\",\\\"continue_win\\\":4,\\\"answer\\\":\\\"A 不是\\\"}\",\"uid\":6000266}"
+	for i := 0; i <= 1000000; i++ {
+		tempMsg := "{\"function\":\"quiz\",\"id\":3670947,\"message\":\"[{\\\"g_id\\\":" + cast.ToString(i) + ",\\\"q_id\\\":18,\\\"anchor_id\\\":6000006,\\\"live_id\\\":1657626708019,\\\"category_id\\\":1,\\\"end_time\\\":1658899519,\\\"status\\\":1,\\\"item_num\\\":2}]\"}"
 
-	err := nats.Publish(subject, marshal)
-	if err != nil {
-		fmt.Println("送不出去, err = ", err)
+		//err := nats.Publish(subject, marshal)
+		err := nats.Publish(subject, []byte(tempMsg))
+		if err != nil {
+			fmt.Println("送不出去, err = ", err)
+		} else {
+			fmt.Println("publish success : ", string(tempMsg))
+		}
+		time.Sleep(500 * time.Millisecond)
 	}
-	time.Sleep(3 * time.Second)
 }
 
 func generateQuiz() globle.LiveStream {
 	var quiz globle.LiveStream
 	quiz.RoomId = 6000098
 	quiz.Function = globle.QuizConst
-	quiz.Content.Status = 1
-	quiz.Content.AmountList = []int{1, 2}
-	quiz.Content.ItemNum = 3
-	quiz.Content.MinBet = 4
-	quiz.Content.PeopleNumList = []int{5, 7}
+	s := globle.QuizContent{
+		ItemNum:       1,
+		Status:        3,
+		PeopleNumList: []int{1, 2},
+		AmountList:    []int{3, 4},
+		MinBet:        5,
+	}
+	marshal, err := json.Marshal(s)
+	if err != nil {
+		return globle.LiveStream{}
+	}
+	quiz.Content = string(marshal)
 	return quiz
 }
 
@@ -71,7 +304,7 @@ func natsStreamingForDDUBasketballRecord(NatsDB stan.Conn) {
 	subject := fmt.Sprint(globle.BasketballRecordLive)
 	fmt.Println("subject = ", subject)
 
-	file, err := ioutil.ReadFile("/Users/ronnie/Downloads/Telegram Desktop/篮球阵容数据 (1).json")
+	file, err := ioutil.ReadFile("/Users/ronnie/Documents/work/DDU/ddu-document/LiveStream/篮球阵容数据-test_file.json")
 	data := file
 
 	lineupJson, err := json.Marshal(data)
@@ -108,7 +341,7 @@ func basketBallStatsLiveMock() (msgs []globle.BasketStatsLiveMessage) {
 			Id:   6000098,
 			Type: i,
 			Home: float64(i),
-			Away: float64(3 + wantRun),
+			Away: float64(2 + wantRun),
 		}
 		msgs = append(msgs, stats)
 	}
@@ -145,7 +378,7 @@ func generateBasketballScore(run int) (BsScores []globle.BasketballScore) {
 			MatchId:     6000098,
 			MatchStatus: 2,
 			TimeLeft:    15 - i,
-			AwayScore:   []int{6, 2, 3, 4, 5},
+			AwayScore:   []int{9, 2, 3, 4, 5},
 			HomeScore:   []int{1, 2, 3, 4, 5},
 		}
 
@@ -159,7 +392,7 @@ func natsStreamingForDDUBasketballText(NatsDB stan.Conn) {
 	subject := fmt.Sprint(globle.BasketballTextLive)
 	fmt.Println("subject = ", subject)
 
-	data := generateBasketballData(5)
+	data := generateBasketballData(14)
 
 	lineupJson, err := json.Marshal(data)
 	//err = NatsDB.Publish(subject, lineupJson)
@@ -174,7 +407,7 @@ func natsStreamingForDDUBasketballText(NatsDB stan.Conn) {
 
 func generateBasketballData(wantRun int) (msgs []globle.TextLiveStruct) {
 
-	for i := wantRun - 1; i >= 0; i-- {
+	for i := 0; i <= wantRun; i++ {
 		var m globle.TextLiveStruct
 		m.Id = 3666736
 		m.Time = strconv.Itoa(i)
@@ -203,7 +436,7 @@ func natsStreamingForDDULineup(NatsDB stan.Conn) {
 
 	subject := fmt.Sprint(globle.FootballLineupLive)
 	fmt.Println("subject = ", subject)
-	file, err := ioutil.ReadFile("/Users/ronnie/Downloads/Telegram Desktop/test1.json")
+	file, err := ioutil.ReadFile("/Users/ronnie/Documents/work/DDU/ddu-document/LiveStream/足球陣容數據-test_file.json")
 	if err != nil {
 		fmt.Println("err ")
 	}
@@ -316,8 +549,8 @@ func natsStreamingForDDUScoreLive(NatsDB stan.Conn) {
 	for i := 1; i <= wantRun; i++ {
 		homeScore := globle.Score{
 			Score:        i,
-			HalfScore:    2,
-			RedCard:      1,
+			HalfScore:    98,
+			RedCard:      2,
 			YellowCard:   3,
 			CornerKick:   99,
 			OTScore:      1,
@@ -379,9 +612,9 @@ func statsLiveMock(statsCount int) (msgs []globle.FootballStatsLiveMessage) {
 	for i := 1; i <= statsCount; i++ {
 		stats := globle.FootballStatsLiveMessage{
 			Id:   6000098,
-			Type: wantRun,
-			Home: 4 + wantRun,
-			Away: 3 + wantRun,
+			Type: i,
+			Home: 1 + i,
+			Away: 3 + i,
 		}
 		msgs = append(msgs, stats)
 	}
@@ -394,7 +627,7 @@ func natsStreamingForDDUMatchTextLive(NatsDB stan.Conn) {
 	fmt.Println("subject = ", subject)
 	// 假資料組成
 
-	msgs := textLiveMock(wantRun)
+	msgs := textLiveMock(23)
 
 	mj, _ := json.Marshal(msgs)
 	err := NatsDB.Publish(subject, mj)

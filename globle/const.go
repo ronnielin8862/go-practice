@@ -15,8 +15,12 @@ const (
 	FootballStatsLive  = "stats_live.football"
 	FootballLineupLive = "lineup_live.football"
 
+	FootballIndexLive         = "odds_live.football"
+	RoomQuizPromptMessageType = "quizPrompt"
+
 	LiveStreamConst = "live_stream" // 直播間相關
 
 	// 直播間功能
-	QuizConst = "quiz"
+	QuizConst       = "quiz"
+	QuizPromptConst = "quiz_prompt"
 )

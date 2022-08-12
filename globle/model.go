@@ -163,9 +163,10 @@ type (
 	}
 
 	LiveStream struct {
-		RoomId   int         `json:"id"`       // 房间id
-		Function string      `json:"function"` // 功能类型，直播、点播
-		Content  QuizContent `json:"message"`  // 消息
+		RoomId   int    `json:"id"`       // 房间id
+		Function string `json:"function"` // 功能类型，直播、点播
+		Uid      int    `json:"uid"`
+		Content  string `json:"message"` // 消息
 	}
 
 	QuizContent struct {
@@ -174,5 +175,29 @@ type (
 		PeopleNumList []int `json:"PeopleNumList"`
 		AmountList    []int `json:"AmountList"`
 		MinBet        int   `json:"MinBet"`
+	}
+
+	IndexNats struct {
+		Index
+		ExponentialScore string `json:"exponential_score"` // 进球比分 or 角球比(cr)，主队-客队
+		MatchId          int    `json:"match_id"`          // 比赛id
+		MatchStatus      int    `json:"match_status"`      // 比赛状态，详见状态码->比赛状态 - int
+		OddsStatus       int    `json:"odds_status"`       // 是否封盘：1-封盘,0-未封盘
+		CompetitionTime  string `json:"competition_time"`  // 比赛进行时间
+	}
+
+	Index struct {
+		CompanyId       int    `json:"company_id"`            // 指数公司id，详见状态码->指数公司ID
+		ExponentialType string `json:"exponential_type"`      // 指数类型：asia-亚盘、eu-欧赔、bs-大小球、cr-角球
+		Odds1           string `json:"odds_1"`                // 主胜/大球/大
+		Odds2           string `json:"odds_2"`                // 和局/盘口
+		Odds3           string `json:"odds_3"`                // 客胜/小球/小
+		ChangeTime      int64  `json:"change_time,omitempty"` // 变化时间
+	}
+
+	GetTextLiveReq struct {
+		RoomId int `json:"id"`
+		LastId int `json:"last_id"`
+		Size   int `json:"size" default:"20"`
 	}
 )

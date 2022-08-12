@@ -93,7 +93,7 @@ func main() {
 	//filteAndDelete(client)
 	//findByQuery(client)
 	//deleteByQuery(client)
-	CleanChatHistory(client)
+	//CleanChatHistory(client)
 }
 
 func deleteByQuery(client *elastic.Client) {
