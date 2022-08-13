@@ -14,7 +14,12 @@ tasks:
     silent: false
     dir: ./
   helper:
-    - cmd: sleep 2 ; echo '222'
+    - cmd: sleep 1 ; echo '222'
   test:
+    cmds:
+      - sleep 1 ; echo 'AAA'
     deps: [helper, run]
 
+
+# 執行task test
+# 功能： https://taskfile.dev/usage/

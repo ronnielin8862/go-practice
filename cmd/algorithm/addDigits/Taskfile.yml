@@ -3,13 +3,13 @@ version: '3'
 tasks:
   run:
     cmds:
-      - cmd: sleep 3; echo '333'
+      - cmd: sleep 2; echo '333'
         ignore_error: true
 #      - cmd: go run .
 #        ignore_error: true
     silent: false
     dir: ./
   helper:
-    - cmd: sleep 4 ; echo '444'
+    - cmd: sleep 3 ; echo '444'
   test:
     deps: [helper, run]
