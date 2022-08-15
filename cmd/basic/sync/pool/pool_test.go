@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"sync"
 	"testing"
 )
@@ -12,18 +11,22 @@ func BenchmarkSyncPool(b *testing.B) {
 		return new(man)
 	}
 
-	for i := 0; i <= 10000; i++ {
+	for i := 0; i <= 36300000; i++ {
 		m := p.Get().(*man)
-		json.Unmarshal(manJson, m)
+		m.name = "AAA"
+		m.age = i
 		p.Put(m)
 	}
 }
 
 func BenchmarkSyncPool2(b *testing.B) {
-	for i := 0; i <= 10000; i++ {
-		//var m man
-		m := &man{}
-		json.Unmarshal(manJson, m)
+	for i := 0; i <= 36300000; i++ {
+		m := new(man)
+		//m := &man{}
+		//json.Unmarshal(manJson, m)
+		m.name = "BBB"
+		m.age = i
+		//fmt.Println(&m)
 	}
 }
 
