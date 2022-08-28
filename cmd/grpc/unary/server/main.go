@@ -36,6 +36,6 @@ func (*Server) Sum(ctx context.Context, req *calculatorPB.CalculatorRequest) (*c
 	res := &calculatorPB.CalculatorResponse{
 		Result: a + b,
 	}
-
+	//time.Sleep(1 * time.Second)
 	return res, nil
 }

@@ -19,7 +19,10 @@ func main() {
 func StartWebSocketClient(ctx echo.Context) error {
 	rq := ctx.Request()
 	addr := rq.RemoteAddr
+	host := rq.Host
 	fmt.Println("addr:", addr)
+	fmt.Println("host:", host)
+	fmt.Println("real ip:", ctx.RealIP())
 	upgrader := websocket.Upgrader{ReadBufferSize: 1024, WriteBufferSize: 1024, CheckOrigin: func(r *http.Request) bool { return true }}
 	conn, err := upgrader.Upgrade(ctx.Response(), rq, nil)
 	if err != nil {
