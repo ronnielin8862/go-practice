@@ -7,8 +7,10 @@ import (
 
 func main() {
 	var t int = 50000
+	// 簡略版本
 	fmt.Println("n:", sum(t))
 
+	// 優美版本
 	fmt.Println("n2: ", sum2(t))
 }
 
@@ -32,7 +34,7 @@ func timeCost() int {
 }
 
 func sum2(n int) int {
-	defer timeCost2()() // 不加上第二個"()", 只回返回方法卻不執行。 如果print timeCost2()，會得到function address。
+	defer timeCost2("Sum2")() // 不加上第二個"()", 只回返回方法卻不執行。 如果print timeCost2()，會得到function address。
 	var s int = 0
 	for i := 0; i < n; i++ {
 		s += i
@@ -40,10 +42,10 @@ func sum2(n int) int {
 	return s
 }
 
-func timeCost2() func() {
+func timeCost2(s string) func() {
 	startTime := time.Now()
 	return func() {
 		t := time.Since(startTime)
-		fmt.Println("time cost2: ", t.Nanoseconds())
+		fmt.Println(s, " time cost : ", t.Nanoseconds())
 	}
 }
