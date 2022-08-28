@@ -16,7 +16,8 @@ tasks:
   helper:
     - cmd: sleep 1 ; echo '222'
   test:
-    cmds: # run cmds afger deps
+    # run cmd after deps
+    cmds:
       - sleep 1 ; echo 'AAA' ; sleep 1 ; echo 'BBB'
     deps: [helper, run]
 
