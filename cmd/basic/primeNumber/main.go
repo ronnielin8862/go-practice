@@ -19,24 +19,41 @@ func main() {
 
 func goRoutineFunc(loopNum int) {
 	defer timeCost()()
+	goroutine := 10
 	c := make(chan int)
 	primeChan := make(chan int, loopNum)
+	g := make(chan bool, goroutine)
 
-	for i := 0; i < 9; i++ {
-		go startGoRoutine(c, primeChan)
+	for i := 0; i < goroutine; i++ {
+		go startGoRoutine(c, g, primeChan)
 	}
 
 	for i := 2; i < loopNum; i++ {
 		c <- i
 	}
+
+	for i := 0; i < goroutine; i++ {
+		<-g
+	}
 	close(c)
+
 	fmt.Println("goRoutine func result : num of prime ", len(primeChan))
 }
 
-func startGoRoutine(c chan int, primeChan chan int) {
+func startGoRoutine(c chan int, g chan bool, primeChan chan int) {
+	times := time.Millisecond * 10
+	t := time.NewTicker(times)
 	for {
-		if isPrime(<-c) {
-			primeChan <- 1
+		select {
+		case v := <-c:
+			if isPrime(v) {
+				primeChan <- 1
+			}
+			t.Reset(times)
+		case <-t.C:
+			t.Stop()
+			g <- true
+			return
 		}
 	}
 }
@@ -44,7 +61,7 @@ func startGoRoutine(c chan int, primeChan chan int) {
 func forLoopFunc(loopNum int) {
 	defer timeCost()()
 	var list []int
-	for i := 0; i < loopNum; i++ {
+	for i := 2; i < loopNum; i++ {
 		if isPrime(i) {
 			list = append(list, i)
 		}
