@@ -24,12 +24,22 @@ func main() {
 	// BF.ADD mytest item
 	_, err := client.Add("mytest", "myItem")
 	if err != nil {
-		fmt.Println("Error:", err)
+		fmt.Println("add Error:", err)
+	}
+	_, err = client.BfAddMulti("mytest", []string{"myItem", "myItem2", "myItem3", "myItem4"})
+	if err != nil {
+		fmt.Println("mAdd Error:", err)
 	}
 
 	exists, err := client.Exists("mytest", "myItem")
 	if err != nil {
-		fmt.Println("Error:", err)
+		fmt.Println("e Error:", err)
 	}
 	fmt.Println("myItem exists in mytest: ", exists)
+
+	e, err := client.BfExistsMulti("mytest", []string{"myItem", "myItem2", "myItem3", "myItem4", "myItem5"})
+	if err != nil {
+		fmt.Println("mExists Error:", err)
+	}
+	fmt.Println("myItem existsMulti in mytest: ", e)
 }
