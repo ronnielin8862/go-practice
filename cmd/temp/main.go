@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"encoding/json"
 	"fmt"
 )
 
@@ -12,25 +11,10 @@ type lineupResp struct {
 }
 
 func main() {
-	var a []string = []string{"123456789x"}
-	b := a[0][:len(a[0])/3]
-	c := a[0][len(a[0])/3 : len(a[0])/3*2]
-	d := a[0][len(a[0])/3*2:]
-	fmt.Println(a)
-	fmt.Println(b)
-	fmt.Println(c)
-	fmt.Println(d)
+	var s []string
+	s = append(s, "")
 
-	fmt.Println(lineupToJason(b))
-	fmt.Println(lineupToJason(c))
-	fmt.Println(lineupToJason(d))
-
-	var resp lineupResp
-	resp.Lineup = b
-	resp.Type = "lineup1"
-
-	rrr, _ := json.Marshal(resp)
-	fmt.Println(string(rrr))
+	fmt.Println("aaaa", s[0])
 }
 
 func lineupToJason(lineup string) string {

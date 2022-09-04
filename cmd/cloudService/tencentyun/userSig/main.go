@@ -15,10 +15,16 @@ import (
 )
 
 func main() {
-	sdkappid := uint64(1400726958)
-	key := "3f5b1aabb685b2dc2c80b81c3c85324c78c5a6edc6bbe189f2a1680e2587f964"
+	// test2
+	//sdkappid := uint64(1400726958)
+	//key := "3f5b1aabb685b2dc2c80b81c3c85324c78c5a6edc6bbe189f2a1680e2587f964"
+
+	// test3
+	sdkappid := uint64(1400731449)
+	key := "f61fc51cf08d5bf8babfdbcc6a877ed4ae607f97f5ff0a03135ad35827123556"
+
 	userid := "admin"
-	expire := 31536000
+	expire := 15552000
 	usersig, err := GenUserSig(int(sdkappid), key, userid, expire)
 	if err != nil {
 		panic(err)
