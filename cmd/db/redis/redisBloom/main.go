@@ -4,7 +4,6 @@ import (
 	"fmt"
 	redisBloom "github.com/RedisBloom/redisbloom-go"
 	"github.com/gomodule/redigo/redis"
-	//"github.com/gomodule/redigo/redis"
 )
 
 func init() {
