@@ -1,0 +1,18 @@
+練習搭建
+
+第一階段，基礎練習，一個註冊一個請求：
+
+1. 服務A: etcd 註冊address, 啟動GRPC server 監聽user id 請求，返回結果
+
+2. 服務B: etcd 請求服務A 地址, 啟動GRPC client 請求服務A，獲取結果
+
+3. 服務A 註冊address, 服務B偵測到後重啟grpc client, 繼續呼叫接口
+
+
+第二階段，練習服務B同時存在註冊與請求需求：
+
+1. 服務A: etcd 註冊address, 啟動GRPC server 監聽user id 請求，返回結果
+
+2. 服務B: etcd 註冊address, 啟動GRPC server 監聽user id 請求， etcd 獲取 服務A 地址, 啟動GRPC client 請求服務A，獲取結果
+
+3. 服務C: etcd 請求服務B地址, GRPC client 請求服務B，獲取結果

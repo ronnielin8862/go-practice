@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"fmt"
 )
 
@@ -11,17 +10,17 @@ type lineupResp struct {
 }
 
 func main() {
-	var s []string
-	s = append(s, "")
+	fmt.Println("1 :", &lineupResp{})
+	b := &lineupResp{}
+	fmt.Println("2 :", b)
 
-	fmt.Println("aaaa", s[0])
+	c := testReturn()
+	fmt.Println("3 :", c)
+
+	d := testReturn()
+	fmt.Println("4 :", d.Lineup)
 }
 
-func lineupToJason(lineup string) string {
-	var buffer bytes.Buffer
-
-	buffer.WriteString("{\"linup1\":\"")
-	buffer.WriteString(lineup)
-	buffer.WriteString("\"}")
-	return buffer.String()
+func testReturn() *lineupResp {
+	return nil
 }
