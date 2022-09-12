@@ -20,8 +20,8 @@ func main() {
 	//key := "3f5b1aabb685b2dc2c80b81c3c85324c78c5a6edc6bbe189f2a1680e2587f964"
 
 	// test3
-	sdkappid := uint64(1400731449)
-	key := "f61fc51cf08d5bf8babfdbcc6a877ed4ae607f97f5ff0a03135ad35827123556"
+	sdkappid := uint64(1400735612)
+	key := "2fe7e1e4a48bf31846253fc1dba678dd3763dc15ee729d3937a2a4f4fdefd703"
 
 	userid := "admin"
 	expire := 15552000

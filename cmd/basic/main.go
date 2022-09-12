@@ -1,6 +1,8 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type User struct {
 	Name string
@@ -8,10 +10,10 @@ type User struct {
 }
 
 func main() {
-	user1 := User{Name: "John", Age: 30}
-	user2 := User{Name: "Mary", Age: 25}
-	user3 := User{Name: "Mary", Age: 25}
-
-	fmt.Println(user1 == user2)
-	fmt.Println(user2 == user3)
+	//maxLen, start := 0, 0
+	table := [128]int{}
+	for i, _ := range table {
+		table[i] = -1
+	}
+	fmt.Println(table)
 }
