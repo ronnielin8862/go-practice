@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strings"
 )
 
 type lineupResp struct {
@@ -10,15 +11,9 @@ type lineupResp struct {
 }
 
 func main() {
-	fmt.Println("1 :", &lineupResp{})
-	b := &lineupResp{}
-	fmt.Println("2 :", b)
+	s := "ABCDE"
 
-	c := testReturn()
-	fmt.Println("3 :", c)
-
-	d := testReturn()
-	fmt.Println("4 :", d.Lineup)
+	fmt.Println(strings.Index(s, "C"))
 }
 
 func testReturn() *lineupResp {

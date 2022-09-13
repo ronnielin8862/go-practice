@@ -7,7 +7,7 @@ import (
 )
 
 func Test1(t *testing.T) {
-	n := lengthOfLongestSubstring3("abcabcbb")
+	n := lengthOfLongestSubstring4("abcabcbb")
 	//t.Log(n)
 	if n == 3 {
 		t.Log("1 success")
@@ -17,7 +17,7 @@ func Test1(t *testing.T) {
 }
 
 func Test2(t *testing.T) {
-	n := lengthOfLongestSubstring3("pwwkew")
+	n := lengthOfLongestSubstring4("pwwkew")
 	//t.Log(n)
 	if n == 3 {
 		t.Log("2 success")
@@ -27,17 +27,17 @@ func Test2(t *testing.T) {
 }
 
 func Test3(t *testing.T) {
-	n := lengthOfLongestSubstring3("wwkewkeio")
+	n := lengthOfLongestSubstring4("wwkewkeio")
 	//t.Log(n)
 	if n == 5 {
 		t.Log("3 success")
 	} else {
-		t.Error("3 fail")
+		t.Error("3 fail, n = ", n)
 	}
 }
 
 func Test4(t *testing.T) {
-	n := lengthOfLongestSubstring3("ababcdeabce")
+	n := lengthOfLongestSubstring4("ababcdeabce")
 	//t.Log(n)
 	if n == 5 {
 		t.Log("4 success")
@@ -47,7 +47,7 @@ func Test4(t *testing.T) {
 }
 
 func Test5(t *testing.T) {
-	n := lengthOfLongestSubstring3(" ")
+	n := lengthOfLongestSubstring4(" ")
 	//t.Log(n)
 	if n == 1 {
 		t.Log("5 success")
@@ -57,7 +57,7 @@ func Test5(t *testing.T) {
 }
 
 func Test6(t *testing.T) {
-	n := lengthOfLongestSubstring3("au")
+	n := lengthOfLongestSubstring4("au")
 	if n == 2 {
 		t.Log("6 success")
 	} else {
@@ -65,11 +65,20 @@ func Test6(t *testing.T) {
 	}
 }
 func Test7(t *testing.T) {
-	n := lengthOfLongestSubstring3("aa")
+	n := lengthOfLongestSubstring4("aa")
 	if n == 1 {
 		t.Log("7 success")
 	} else {
 		t.Error("7 fail")
+	}
+}
+
+func Test8(t *testing.T) {
+	n := lengthOfLongestSubstring4("dvdf")
+	if n == 3 {
+		t.Log("8 success")
+	} else {
+		t.Error("8 fail, n = ", n)
 	}
 }
 
@@ -148,4 +157,22 @@ func lengthOfLongestSubstring3(s string) int {
 		maxLen = maxInt(maxLen, i-start+1)
 	}
 	return maxLen
+}
+
+// 根據建議的邏輯寫的 嘗試單迴圈    wwkewkeio
+func lengthOfLongestSubstring4(s string) int {
+	start := 0
+	var maxLength int
+
+	for i := 0; i < len(s); i++ {
+		if !strings.Contains(s[start:i], string(s[i])) {
+			maxLength = maxInt(maxLength, i-start+1)
+			if maxLength < i-start+1 {
+				maxLength = i - start + 1
+			}
+		} else {
+			start = strings.LastIndex(s[:i], string(s[i])) + 1
+		}
+	}
+	return maxLength
 }
