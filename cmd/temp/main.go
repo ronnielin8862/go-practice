@@ -13,7 +13,7 @@ type lineupResp struct {
 func main() {
 	s := "ABCDE"
 
-	fmt.Println(strings.Index(s, "C"))
+	fmt.Println(strings.Compare(s, "C"))
 }
 
 func testReturn() *lineupResp {

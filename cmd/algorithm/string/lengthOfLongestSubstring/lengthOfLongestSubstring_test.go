@@ -159,7 +159,7 @@ func lengthOfLongestSubstring3(s string) int {
 	return maxLen
 }
 
-// 根據建議的邏輯寫的 嘗試單迴圈    wwkewkeio
+// 最佳解 ！  84% ; 100%  學起起來這種邏輯。  要先克服直覺想到的雙迴圈解法
 func lengthOfLongestSubstring4(s string) int {
 	start := 0
 	var maxLength int
