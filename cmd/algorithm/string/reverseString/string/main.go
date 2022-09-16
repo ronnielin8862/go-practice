@@ -17,12 +17,15 @@ import "fmt"
 //输出：["h","a","n","n","a","H"]
 
 func main() {
-	s := []string{"h", "e", "l", "l", "o"}
+	var b []byte
+	for _, v := range "hello" {
+		b = append(b, byte(v))
+	}
 
-	reverseString(s)
+	reverseString(b)
 }
 
-func reverseString(s []string) {
+func reverseString(s []byte) {
 
 	for i := 0; i < len(s)/2; i++ {
 		temp := s[i]
@@ -30,5 +33,5 @@ func reverseString(s []string) {
 		s[i] = s[len(s)-1-i]
 		s[len(s)-1-i] = temp
 	}
-	fmt.Println(s)
+	fmt.Println(string(s))
 }

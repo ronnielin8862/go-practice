@@ -11,9 +11,9 @@ type lineupResp struct {
 }
 
 func main() {
-	s := "ABCDE"
+	s := "AB,CD,EF"
 
-	fmt.Println(strings.Index(s, "C"))
+	fmt.Println(strings.Split(s, ",")[1])
 }
 
 func testReturn() *lineupResp {
