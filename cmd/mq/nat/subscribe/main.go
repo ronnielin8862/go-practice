@@ -15,8 +15,8 @@ import (
 func main() {
 	// Create server connection
 	//nc, _ := nats.Connect("nats://127.0.0.1:4222")
-	//url := fmt.Sprintf("nats://%s:%s", "127.0.0.1", "4222")
-	url := fmt.Sprintf("nats://%s:%s", "52.221.194.38", "4344")
+	url := fmt.Sprintf("nats://%s:%s", "127.0.0.1", "4223")
+	//url := fmt.Sprintf("nats://%s:%s", "52.221.194.38", "4344")
 	//jetstream
 	//jetStream(nc)
 
@@ -37,15 +37,29 @@ func main() {
 		fmt.Printf("error by nats connect: %v ", err)
 	}
 	//jetStreamPubTestForDDU(nc)
-	go natsStreamingForDDUBasketballScoreLive(NatsDB)
-	go natsStreamingForDDUBasketballTextLive(NatsDB)
-	go natsStreamingForDDUBasketballStatsLive(NatsDB)
-	go natsStreamingForDDUScoreLive(NatsDB)
-	go natsStreamingForDDUStatusLive(NatsDB)
-	go natsStreamingForDDUTextLive(NatsDB)
-	go natsStreamingForDDULineUp(NatsDB)
-	go natsStreamingForDDUBasketballRecord(NatsDB)
+	go natsStreamingSubMaxConcurrency(NatsDB)
+	//go natsStreamingForDDUBasketballScoreLive(NatsDB)
+	//go natsStreamingForDDUBasketballTextLive(NatsDB)
+	//go natsStreamingForDDUBasketballStatsLive(NatsDB)
+	//go natsStreamingForDDUScoreLive(NatsDB)
+	//go natsStreamingForDDUStatusLive(NatsDB)
+	//go natsStreamingForDDUTextLive(NatsDB)
+	//go natsStreamingForDDULineUp(NatsDB)
+	//go natsStreamingForDDUBasketballRecord(NatsDB)
 	select {}
+}
+
+// 這個實例證明 nats是一個個處理，並不是併發。 要實現併發可以客戶端自行處理。
+func natsStreamingSubMaxConcurrency(db stan.Conn) {
+	_, err := db.Subscribe("test_most_concurrency", func(msg *stan.Msg) {
+		fmt.Println("receive : ", string(msg.Data))
+		time.Sleep(10 * time.Second)
+
+		fmt.Println("finish : ", string(msg.Data))
+	})
+	if err != nil {
+		fmt.Println("err : ", err)
+	}
 }
 
 func natsStreamingForDDUBasketballRecord(NatsDB stan.Conn) {
@@ -290,14 +304,14 @@ func natsStreamForDDU(nc *nats.Conn) {
 	}
 }
 
-//聊天记录处理
+// 聊天记录处理
 func ChatRecordHandler(msg *stan.Msg) {
 	var chatHistory ChatHistory
 	fmt.Println("chatHistory: ", chatHistory)
 	json.Unmarshal(msg.Data, &chatHistory)
 }
 
-//礼物处理
+// 礼物处理
 func SendGiftHandler(msg *stan.Msg) {
 	var sendGiftReq SendGiftReq
 	fmt.Println("sendGiftReq: ", sendGiftReq)

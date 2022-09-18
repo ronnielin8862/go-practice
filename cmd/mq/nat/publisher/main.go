@@ -15,8 +15,8 @@ import (
 )
 
 func main() {
-	//url := fmt.Sprintf("nats://127.0.0.1:4222")
-	url := fmt.Sprintf("nats://%s:%s", "52.221.194.38", "4344") //test1
+	url := fmt.Sprintf("nats://127.0.0.1:4223")
+	//url := fmt.Sprintf("nats://%s:%s", "52.221.194.38", "4344") //test1
 	//url := fmt.Sprintf("nats://%s:%s", "43.155.65.38", "4344") //test3
 	nc, _ := nats.Connect(
 		url,
@@ -32,6 +32,7 @@ func main() {
 		fmt.Println("error by nats connect: ", err)
 	}
 	//jetStreamPubTestForDDU(nc, NatsDB)
+	NatsStreamingTestMaxConcurrency(NatsDB)
 	//natsStreamingForDDUMatchTextLive(NatsDB)
 	//natsStreamingForDDUScoreLive(NatsDB)
 	//natsStreamingForDDUStatsLive(NatsDB)
@@ -40,9 +41,20 @@ func main() {
 	//natsStreamingForDDUBasketballScore(NatsDB)
 	//natsStreamingForDDUBasketballstats(NatsDB)
 	//natsStreamingForDDUBasketballRecord(NatsDB)
-	natStreamingForDDUQuiz(NatsDB)
+	//natStreamingForDDUQuiz(NatsDB)
 	//natStreamingForDDUIndex(NatsDB)
 	//	natStreamingForDDUQuizPrompt(NatsDB)
+}
+
+func NatsStreamingTestMaxConcurrency(db stan.Conn) {
+	for i := 0; i < 10; i++ {
+		err := db.Publish("test_most_concurrency", []byte(strconv.Itoa(i)))
+		if err != nil {
+			fmt.Println("err : ", err)
+		}
+		fmt.Println("push : ", i)
+	}
+
 }
 
 func natStreamingForDDUQuizPrompt(db stan.Conn) {
@@ -872,7 +884,7 @@ func natsStreamingForDDU(NatsDB stan.Conn) {
 
 }
 
-//聊天记录处理
+// 聊天记录处理
 func ChatRecordHandler(msg *stan.Msg) {
 	fmt.Println("收到聊天记订阅消息:%v", string(msg.Data))
 
