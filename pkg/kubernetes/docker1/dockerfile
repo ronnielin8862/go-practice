@@ -1,0 +1,19 @@
+# syntax=docker/dockerfile:1
+
+FROM golang:1.19.1-alpine3.16
+
+WORKDIR /app
+
+RUN apk add --no-cache git
+
+RUN git clone https://github.com/ronnielin8862/go-practice.git
+
+RUN cd go-practice/ && go mod tidy
+
+RUN cd pkg/kubernetes/docker1
+
+RUN go build
+
+EXPOSE 3000
+
+CMD [ "./docker1" ]
