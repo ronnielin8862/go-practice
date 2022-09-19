@@ -1,9 +1,6 @@
 package main
 
-import (
-	"fmt"
-	"strings"
-)
+import "fmt"
 
 type lineupResp struct {
 	Lineup string `json:"lineup"`
@@ -11,11 +8,18 @@ type lineupResp struct {
 }
 
 func main() {
-	s := "AB,CD,EF"
 
-	fmt.Println(strings.Split(s, ",")[1])
+	s := "AB,CD,EF"
+	fmt.Println(testReturn(s))
 }
 
-func testReturn() *lineupResp {
-	return nil
+func testReturn(s string) string {
+	b := []byte(s)
+	fmt.Println("len :", len(b))
+	j := len(b) - 1
+	for i := 0; i < len(b)/2; i++ {
+		b[i], b[j] = b[j], b[i]
+		j--
+	}
+	return string(b)
 }
