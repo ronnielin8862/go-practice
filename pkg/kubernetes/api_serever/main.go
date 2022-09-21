@@ -11,25 +11,28 @@ func main() {
 	server.POST("/get", GetMethod)
 	server.GET("/start_mark/*filepath", StartMark)
 
-	server.Run(":3000")
+	err := server.Run(":3000")
+	if err != nil {
+		fmt.Println("start gin err : ", err)
+	}
 }
 
 func StartMark(c *gin.Context) {
 	fmt.Println("Request URI = ", c.Request.RequestURI)
 	fmt.Println("Request Param = ", c.Param("filepath"))
-	c.String(200, "完成")
+	c.String(200, "complete")
 }
 
 func GetMethod(c *gin.Context) {
-	fmt.Println("進入Get")
+	fmt.Println("Get entrance")
 	type Person struct {
-		Name string `form:"name"`
+		Name string `json:"name" binding:"required"`
 	}
 	var person Person
 	err := c.ShouldBindJSON(&person)
 	if err != nil {
-		fmt.Println("err = ", err)
+		c.String(400, "must have name")
+		return
 	}
-	fmt.Println("body = ", person.Name)
-	c.String(200, "Get完成")
+	c.String(200, fmt.Sprint("Get finish,", person.Name))
 }

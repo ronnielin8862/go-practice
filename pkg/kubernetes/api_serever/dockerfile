@@ -12,4 +12,4 @@ RUN go build
 
 EXPOSE 3000
 
-CMD [ "./docker1" ]
+CMD [ "./api_serever" ]
