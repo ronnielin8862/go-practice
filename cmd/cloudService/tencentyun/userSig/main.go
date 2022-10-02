@@ -20,8 +20,12 @@ func main() {
 	//key := "3f5b1aabb685b2dc2c80b81c3c85324c78c5a6edc6bbe189f2a1680e2587f964"
 
 	// test3
-	sdkappid := uint64(1400735612)
-	key := "2fe7e1e4a48bf31846253fc1dba678dd3763dc15ee729d3937a2a4f4fdefd703"
+	//sdkappid := uint64(1400735612)
+	//key := "2fe7e1e4a48bf31846253fc1dba678dd3763dc15ee729d3937a2a4f4fdefd703"
+
+	// UAT
+	sdkappid := uint64(1400730354)
+	key := "ee16d41370c415ae99aff816b6524f3e53ad76fcda3ece48fa96fd95435399e4"
 
 	userid := "admin"
 	expire := 15552000

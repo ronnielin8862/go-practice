@@ -1,16 +1,22 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type lineupResp struct {
-	Lineup string `json:"lineup"`
-	Type   string `json:"type"`
+	Id   int    `json:"lineup"`
+	Type string `json:"type"`
 }
 
 func main() {
+	b := &lineupResp{
+		Id:   1,
+		Type: "test",
+	}
 
-	s := "AB,CD,EF"
-	fmt.Println(testReturn(s))
+	fmt.Printf("%+v", b)
+
 }
 
 func testReturn(s string) string {

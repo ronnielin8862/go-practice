@@ -83,34 +83,34 @@ type (
 
 	Lineup struct {
 		MatchId       int          `json:"match_id"`       // 比賽ID
-		Confirmed     int          `json:"confirmed"`      // 正式阵容，1-是、0-不是
+		Confirmed     int8         `json:"confirmed"`      // 正式阵容，1-是、0-不是
 		HomeFormation string       `json:"home_formation"` // 主队阵型 3-4-3
 		AwayFormation string       `json:"away_formation"` // 客队阵型 4-4-1-1
 		Home          []LineupItem `json:"home"`           // 主隊球員信息
 		Away          []LineupItem `json:"away"`           // 客隊球員信息
 	}
 	LineupItem struct {
-		LineupId     int         `json:"id"`                  // 球员id
-		TeamId       int         `json:"team_id"`             // 球队id
-		First        int         `json:"first"`               // 是否首发，1-是、0-否
-		Captain      int         `json:"captain"`             // 是否队长，1-是、0-否
-		Name         string      `json:"name"`                // 球员名称
-		Logo         string      `json:"logo"`                // 球员logo
-		NationalLogo string      `json:"national_logo"`       // 球员logo(国家队)
-		ShirtNumber  int         `json:"shirt_number"`        // 球衣号
-		Position     string      `json:"position"`            // 球员位置，F前锋、M中场、D后卫、G守门员、其他为未知
-		X            int         `json:"x"`                   // 阵容x坐标，总共100
-		Y            int         `json:"y"`                   // 阵容y坐标，总共100
-		Rating       string      `json:"rating"`              // 评分，10为满分
-		Incidents    []Incidents `json:"Incidents,omitempty"` // 球员事件列表，有事件存在，默认不存在
+		LineupId     int         `json:"id"`            // 球员id
+		TeamId       int         `json:"team_id"`       // 球队id
+		First        int8        `json:"first"`         // 是否首发，1-是、0-否
+		Captain      int8        `json:"captain"`       // 是否队长，1-是、0-否
+		Name         string      `json:"name"`          // 球员名称
+		Logo         string      `json:"logo"`          // 球员logo
+		NationalLogo string      `json:"national_logo"` // 球员logo(国家队)
+		ShirtNumber  int         `json:"shirt_number"`  // 球衣号
+		Position     string      `json:"position"`      // 球员位置，F前锋、M中场、D后卫、G守门员、其他为未知
+		X            int8        `json:"x"`             // 阵容x坐标，总共100
+		Y            int8        `json:"y"`             // 阵容y坐标，总共100
+		Rating       string      `json:"rating"`        // 评分，10为满分
+		Incidents    []Incidents `json:"Incidents"`     // 球员事件列表，有事件存在，默认不存在
 	}
 	Incidents struct {
 		Type       int    `json:"type"`        // 事件类型，详见状态码->技术统计
 		Time       string `json:"time"`        // 事件发生时间（含加时时间，'A+B':A-比赛时间,B-加时时间）
-		Belong     int    `json:"belong"`      // 发生方，0-中立、1-主队、2-客队
+		Belong     int8   `json:"belong"`      // 发生方，0-中立、1-主队、2-客队
 		HomeScore  int    `json:"home_score"`  // 主队比分
 		AwayScore  int    `json:"away_score"`  // 客队比分
-		ReasonType int    `json:"reason_type"` // 红黄牌、换人事件原因，详见状态码->事件原因（红黄牌、换人事件存在）
+		ReasonType int8   `json:"reason_type"` // 红黄牌、换人事件原因，详见状态码->事件原因（红黄牌、换人事件存在）
 		Player     Player `json:"player"`      // player-相关球员
 		Assist1    Player `json:"assist1"`     // assist1-助攻球员1
 		Assist2    Player `json:"assist2"`     // assist1-助攻球员2
