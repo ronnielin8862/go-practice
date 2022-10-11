@@ -23,7 +23,7 @@ func init() {
 		stan.SetConnectionLostHandler(func(_ stan.Conn, reason error) {
 			fmt.Println("Connection lost, reason: ", reason)
 		}),
-		stan.PubAckWait(3*time.Second),
+		stan.PubAckWait(30*time.Second),
 		stan.MaxPubAcksInflight(100))
 
 	if err != nil {
@@ -31,6 +31,7 @@ func init() {
 	}
 }
 
+// 這裡實驗結果呈現，如果執行緒結束前沒有等待一毫秒左右，異步發送的消息會丟失。
 func main() {
 	//var handler stan.AckHandler
 	handler := func(ackUid string, err error) {
@@ -64,19 +65,21 @@ func chanOne(handler stan.AckHandler) {
 }
 
 func chanTwo(handler stan.AckHandler) {
-	for i := 0; i < 3; i++ {
-		async, err := stanP.PublishAsync("test_2", []byte(cast.ToString(i)), handler)
-		if err != nil {
-			fmt.Printf("publish2 err : i = %v, err = %s ", i, err)
-		} else {
-			fmt.Println("publish2 success: ", async)
-		}
-		//time.Sleep(time.Millisecond * 1)
-	}
 	//for i := 0; i < 3; i++ {
-	//	err := stanP.Publish("test_2", []byte(cast.ToString(i)))
+	//	async, err := stanP.PublishAsync("test_2", []byte(cast.ToString(i)), handler)
 	//	if err != nil {
 	//		fmt.Printf("publish2 err : i = %v, err = %s ", i, err)
+	//	} else {
+	//		fmt.Println("publish2 success: ", async)
 	//	}
+	//	//time.Sleep(time.Millisecond * 1)
 	//}
+	defer fmt.Println("end")
+	for i := 0; i < 10; i++ {
+		_, err := stanP.PublishAsync("test_2", []byte(cast.ToString(i)), nil)
+		if err != nil {
+			fmt.Printf("publish2 err : i = %v, err = %s ", i, err)
+		}
+	}
+	//time.Sleep(1 * time.Millisecond)
 }

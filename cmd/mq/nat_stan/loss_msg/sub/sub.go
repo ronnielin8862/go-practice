@@ -18,7 +18,7 @@ func init() {
 		nats.Timeout(time.Second*10),
 		nats.PingInterval(time.Second*4),
 	)
-	stanS, err = stan.Connect("test-cluster", "natsClicent107", stan.NatsConn(nc),
+	stanS, err = stan.Connect("test-cluster", "natsClicent109", stan.NatsConn(nc),
 		stan.SetConnectionLostHandler(func(_ stan.Conn, reason error) {
 			fmt.Println("Connection lost, reason: ", reason)
 		}))
@@ -28,13 +28,13 @@ func init() {
 }
 
 func main() {
-	_, err := stanS.Subscribe("test_1", printSub1)
-	if err != nil {
-		fmt.Println("error by subscribe: ", err)
-	}
+	//_, err := stanS.Subscribe("test_1", printSub1)
+	//if err != nil {
+	//	fmt.Println("error by subscribe: ", err)
+	//}
 	//defer subscribe1.Close()
 
-	_, err = stanS.Subscribe("test_2", printSub2, stan.DurableName("test_2"), stan.AckWait(3*time.Second), stan.SetManualAckMode())
+	_, err := stanS.Subscribe("test_2", printSub2, stan.DurableName("test_2"), stan.AckWait(3*time.Second), stan.SetManualAckMode())
 	if err != nil {
 		fmt.Println("error by subscribe: ", err)
 	}
