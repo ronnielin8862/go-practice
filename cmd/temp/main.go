@@ -11,6 +11,7 @@ type lineupResp struct {
 }
 
 func main() {
+	// git 1
 	t := time.Now()
 	today := time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, t.Location()).Unix()
 
