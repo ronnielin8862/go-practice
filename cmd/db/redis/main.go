@@ -20,9 +20,17 @@ func init() {
 }
 
 func main() {
-	key := "test996"
-	value := "可憐哪"
-	tryExpirationMessage(key, value)
+	//key := "test996"
+	//value := "可憐哪"
+	//tryExpirationMessage(key, value)
+
+	i, err := rs.HGetAll(context.Background(), "testInt64").Result()
+
+	if err != nil {
+		fmt.Println("err = ", err)
+	} else {
+		fmt.Println("i = ", i)
+	}
 }
 
 func tryExpirationMessage(key string, value string) {

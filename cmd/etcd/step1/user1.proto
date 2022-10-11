@@ -1,0 +1,14 @@
+syntax = "proto3";  // 定義要使用的 protocol buffer 版本
+
+package user1;  // for name space
+option go_package = "proto/calculator";  // generated code 的 full Go import path
+
+message User {  // 定義一個 message 名稱為 User
+  int32 id = 1;  // 定義一個 int32 型態的欄位 id
+  string name = 2;  // 定義一個 string 名稱為 name
+  int32 age = 3;  // 定義一個 int32 名稱為 age
+}
+
+service UserService {  // 定義一個 service 名稱為 UserService
+  rpc GetUser (User) returns (User);  // 定義一個 rpc 名稱為 GetUser
+}
