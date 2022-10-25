@@ -9,17 +9,20 @@ type lineupResp struct {
 	Type string `json:"type"`
 }
 
+var ch chan struct{}
+
 func main() {
-	fmt.Println("2222 = ", 50/100)
+	m := make(map[int]lineupResp)
+	m[1] = lineupResp{Id: 1, Type: "1"}
+	m[2] = lineupResp{Id: 2, Type: "2"}
+
+	fmt.Println("m 3: ", m[3])
 }
 
-func testReturn(s string) string {
-	b := []byte(s)
-	fmt.Println("len :", len(b))
-	j := len(b) - 1
-	for i := 0; i < len(b)/2; i++ {
-		b[i], b[j] = b[j], b[i]
-		j--
-	}
-	return string(b)
+func run(i int) {
+	ch <- struct{}{}
+	defer func() {
+		<-ch
+	}()
+	fmt.Println("run : ", i)
 }

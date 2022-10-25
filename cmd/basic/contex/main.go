@@ -12,16 +12,16 @@ func main() {
 	ctx, _ = context.WithDeadline(ctx, time.Now().Add(time.Second*5)) // 设置超时时间點
 	//ctx, _ = context.WithTimeout(ctx, time.Second*5) // 设置超時倒數時間
 	go layer1(ctx)
-	//select {
-	//case <-ctx.Done():
-	//	fmt.Println("main done")
-	//}
+	select {
+	case <-ctx.Done():
+		fmt.Println("main done")
+	}
 
 	time.Sleep(time.Second * 10)
 }
 
 func layer1(ctx context.Context) {
-	fmt.Println("layer1")
+	fmt.Println("layer1") // 1
 	go layer2(ctx)
 	go func() {
 		select {
@@ -32,7 +32,7 @@ func layer1(ctx context.Context) {
 }
 
 func layer2(ctx context.Context) {
-	fmt.Println("layer2")
+	fmt.Println("layer2") //2
 	ctx2, cancel := context.WithCancel(ctx)
 	go layer3(ctx2) // 取消context
 	time.Sleep(time.Second * 4)
@@ -44,10 +44,10 @@ func layer2(ctx context.Context) {
 }
 
 func layer3(ctx context.Context) {
-	fmt.Println("layer3")
-	fmt.Println("value = ", ctx.Value("keyA"))
+	fmt.Println("layer3")                      // 3
+	fmt.Println("value = ", ctx.Value("keyA")) // 4
 	if deadline, ok := ctx.Deadline(); ok {
-		fmt.Println("deadline = ", deadline)
+		fmt.Println("deadline = ", deadline) // 5
 	}
 	go layer4(ctx)
 	select {
