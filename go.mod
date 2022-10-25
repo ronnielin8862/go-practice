@@ -81,6 +81,7 @@ require (
 	github.com/oschwald/maxminddb-golang v1.10.0 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
+	github.com/rabbitmq/amqp091-go v1.5.0 // indirect
 	github.com/shengdoushi/base58 v1.0.0 // indirect
 	github.com/shirou/gopsutil v3.21.4-0.20210419000835-c7a38de76ee5+incompatible // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
