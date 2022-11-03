@@ -30,6 +30,7 @@ require (
 	github.com/nats-io/stan.go v0.10.2
 	github.com/olivere/elastic/v7 v7.0.32
 	github.com/oschwald/geoip2-golang v1.8.0
+	github.com/rabbitmq/amqp091-go v1.5.0
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/shopspring/decimal v1.3.1
 	github.com/sirupsen/logrus v1.8.1
@@ -39,6 +40,7 @@ require (
 	go.etcd.io/etcd v3.3.27+incompatible
 	go.mongodb.org/mongo-driver v1.8.4
 	golang.org/x/crypto v0.0.0-20220315160706-3147a52a75dd
+	golang.org/x/exp v0.0.0-20221031165847-c99f073a8326
 	google.golang.org/grpc v1.42.0
 	google.golang.org/protobuf v1.27.1
 )
@@ -81,7 +83,6 @@ require (
 	github.com/oschwald/maxminddb-golang v1.10.0 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	github.com/rabbitmq/amqp091-go v1.5.0 // indirect
 	github.com/shengdoushi/base58 v1.0.0 // indirect
 	github.com/shirou/gopsutil v3.21.4-0.20210419000835-c7a38de76ee5+incompatible // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
@@ -99,9 +100,8 @@ require (
 	go.uber.org/zap v1.15.0 // indirect
 	golang.org/x/net v0.0.0-20211112202133-69e39bad7dc2 // indirect
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
-	golang.org/x/sys v0.0.0-20220804214406-8e32c043e418 // indirect
+	golang.org/x/sys v0.1.0 // indirect
 	golang.org/x/text v0.3.7 // indirect
-	golang.org/x/xerrors v0.0.0-20220517211312-f3a8303e98df // indirect
 	google.golang.org/genproto v0.0.0-20211104193956-4c6863e31247 // indirect
 	gopkg.in/natefinch/npipe.v2 v2.0.0-20160621034901-c1b8fa8bdcce // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
