@@ -12,6 +12,10 @@ const (
 	e
 )
 
+type x struct {
+	x int
+}
+
 type lineupResp struct {
 	Id   int    `json:"lineup"`
 	Type string `json:"type"`
@@ -21,7 +25,6 @@ var ch chan struct{}
 
 func main() {
 	fmt.Println(a)
-
 }
 
 func run(i int) {
