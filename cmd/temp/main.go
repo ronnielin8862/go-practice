@@ -25,6 +25,7 @@ var ch chan struct{}
 
 func main() {
 	fmt.Println(a)
+	fmt.Println("z")
 }
 
 func run(i int) {
