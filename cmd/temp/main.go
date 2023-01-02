@@ -4,6 +4,14 @@ import (
 	"fmt"
 )
 
+const (
+	a = iota
+	b
+	c
+	d
+	e
+)
+
 type lineupResp struct {
 	Id   int    `json:"lineup"`
 	Type string `json:"type"`
@@ -12,11 +20,11 @@ type lineupResp struct {
 var ch chan struct{}
 
 func main() {
-	m := make(map[int]lineupResp)
-	m[1] = lineupResp{Id: 1, Type: "1"}
-	m[2] = lineupResp{Id: 2, Type: "2"}
-
-	fmt.Println("m 3: ", m[3])
+	fmt.Println(a)
+	fmt.Println(b)
+	fmt.Println(c)
+	fmt.Println(d)
+	fmt.Println(e)
 }
 
 func run(i int) {
