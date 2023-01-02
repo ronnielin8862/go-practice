@@ -24,7 +24,7 @@ func main() {
 	fmt.Println(b)
 	fmt.Println(c)
 	fmt.Println(d)
-	fmt.Println(e)
+	//fmt.Println(e)
 }
 
 func run(i int) {
