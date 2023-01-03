@@ -4,6 +4,10 @@ import (
 	"fmt"
 )
 
+type a struct {
+	a int
+}
+
 //
 //const (
 //	a = iota
