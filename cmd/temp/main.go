@@ -26,6 +26,10 @@ type lineupResp struct {
 	Type string `json:"type"`
 }
 
+type c struct {
+	c int
+}
+
 var ch chan struct{}
 
 func main() {
