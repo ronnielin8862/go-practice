@@ -13,22 +13,6 @@ import (
 //	e
 //)
 
-type a struct {
-	a int
-}
-
-type b struct {
-	b int
-}
-
-type c struct {
-	c int
-}
-
-type d struct {
-	d int
-}
-
 type lineupResp struct {
 	Id   int    `json:"lineup"`
 	Type string `json:"type"`
