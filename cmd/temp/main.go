@@ -21,6 +21,10 @@ type b struct {
 	b int
 }
 
+type c struct {
+	c int
+}
+
 type lineupResp struct {
 	Id   int    `json:"lineup"`
 	Type string `json:"type"`
