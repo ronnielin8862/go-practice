@@ -33,7 +33,12 @@ type c struct {
 var ch chan struct{}
 
 func main() {
+	fmt.Println("hello world")
+	fmt.Println("hello world")
+}
 
+type d struct {
+	d int
 }
 
 func run(i int) {
