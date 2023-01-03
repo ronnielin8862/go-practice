@@ -4,16 +4,17 @@ import (
 	"fmt"
 )
 
-const (
-	a = iota
-	b
-	c
-	d
-	e
-)
+//
+//const (
+//	a = iota
+//	b
+//	c
+//	d
+//	e
+//)
 
-type x struct {
-	x int
+type a struct {
+	a int
 }
 
 type lineupResp struct {
@@ -24,8 +25,7 @@ type lineupResp struct {
 var ch chan struct{}
 
 func main() {
-	fmt.Println(a)
-	fmt.Println("z")
+
 }
 
 func run(i int) {
