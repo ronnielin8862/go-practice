@@ -3,6 +3,7 @@ module github.com/ronnielin8862/go-practice
 go 1.18
 
 require (
+	github.com/BurntSushi/toml v0.3.1
 	github.com/RedisBloom/redisbloom-go v1.0.0
 	github.com/axgle/mahonia v0.0.0-20180208002826-3358181d7394
 	github.com/btcsuite/btcd v0.20.1-beta

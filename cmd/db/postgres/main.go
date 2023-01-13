@@ -22,21 +22,38 @@ func init() {
 		"password=%s dbname=%s sslmode=disable",
 		host, port, user, password, dbname)
 
-	db, err := sql.Open("postgres", psqlInfo)
+	newDb, err := sql.Open("postgres", psqlInfo)
 
-	if err != nil {
-		panic(err)
-	}
-	defer db.Close()
-
-	err = db.Ping()
+	err = newDb.Ping()
 	if err != nil {
 		panic(err)
 	}
 
 	fmt.Println("Successfully connected!")
+
+	db = newDb
 }
 
+var (
+	id   int
+	name string
+	age  int
+)
+
 func main() {
-	fmt.Println("111")
+
+	rows, err := db.Query("SELECT * FROM users")
+	if err != nil {
+		panic(err)
+	}
+
+	for rows.Next() {
+		err := rows.Scan(&id, &name, &age)
+		if err != nil {
+			return
+		}
+		fmt.Println(id, name, age)
+	}
+
+	db.Close()
 }
