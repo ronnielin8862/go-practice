@@ -1,9 +1,8 @@
-package main
+package globle
 
 import (
 	"fmt"
 	"github.com/ronnielin8862/go-practice/cmd/db/postgres/psqlConn"
-	"github.com/ronnielin8862/go-practice/globle"
 	"testing"
 )
 
@@ -14,7 +13,7 @@ var (
 )
 
 func TestStartServer(t *testing.T) {
-	globle.StartServer()
+	StartServer()
 	rows, err := psqlConn.GetPsql().Query("SELECT * FROM users")
 	if err != nil {
 		panic(err)

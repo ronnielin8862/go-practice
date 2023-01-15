@@ -10,11 +10,13 @@ import (
 
 var db *sql.DB
 
-func InitPsql(cfg *config.GlobalConfig) {
+func InitPsql() {
+
+	psql := config.Config.Psql
 
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
 		"password=%s dbname=%s sslmode=disable",
-		cfg.Psql.Host, cfg.Psql.Port, cfg.Psql.User, cfg.Psql.Password, cfg.Psql.DBName)
+		psql.Host, psql.Port, psql.User, psql.Password, psql.DBName)
 
 	newDb, err := sql.Open("postgres", psqlInfo)
 	if err != nil {

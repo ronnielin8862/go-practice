@@ -17,14 +17,13 @@ type (
 	}
 )
 
-var config = GlobalConfig{}
+var Config = GlobalConfig{}
 
-func LoadGlobalConfig(filename string) (*GlobalConfig, error) {
-	_, err := toml.DecodeFile(filename, &config)
+func LoadGlobalConfig() {
+	fileName := "/Users/ronnie/Library/Mobile Documents/com~apple~CloudDocs/Documents/coding/code/go-practice/config.toml"
+	_, err := toml.DecodeFile(fileName, &Config)
 	if err != nil {
-		return nil, fmt.Errorf("load config file '%s' failed, %s", filename, err)
+		fmt.Printf("load config file '%s' failed, %s", fileName, err)
 	}
 	//config.valid = true
-
-	return &config, nil
 }
