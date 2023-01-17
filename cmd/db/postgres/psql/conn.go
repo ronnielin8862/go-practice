@@ -1,20 +1,20 @@
-package psqlConn
+package psql
 
 import (
 	"database/sql"
 	"fmt"
 	"github.com/ronnielin8862/go-practice/config"
+	"sync"
 
 	_ "github.com/lib/pq"
 )
 
-//var db2 *sql.DB
+var db *sql.DB
+var once sync.Once
 
-func InitPsql2(psqlConfig *config.GlobalConfig2) *sql.DB {
+func initPsql() {
 
-	fmt.Println("==== config ==== ", psqlConfig)
-
-	psql := psqlConfig.Psql2
+	psql := config.Config.Psql
 
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
 		"password=%s dbname=%s sslmode=disable",
@@ -30,5 +30,10 @@ func InitPsql2(psqlConfig *config.GlobalConfig2) *sql.DB {
 
 	fmt.Println("Successfully connected!")
 
-	return newDb
+	db = newDb
+}
+
+func Get() *sql.DB {
+	once.Do(initPsql)
+	return db
 }

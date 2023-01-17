@@ -1,4 +1,4 @@
-package psqlConn
+package psql
 
 import (
 	"database/sql"
@@ -8,11 +8,13 @@ import (
 	_ "github.com/lib/pq"
 )
 
-var db *sql.DB
+//var db2 *sql.DB
 
-func InitPsql() {
+func InitPsql2(psqlConfig *config.GlobalConfig2) *sql.DB {
 
-	psql := config.Config.Psql
+	fmt.Println("==== InitPsql2 ==== ", psqlConfig)
+
+	psql := psqlConfig.Psql2
 
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
 		"password=%s dbname=%s sslmode=disable",
@@ -28,9 +30,5 @@ func InitPsql() {
 
 	fmt.Println("Successfully connected!")
 
-	db = newDb
-}
-
-func GetPsql() *sql.DB {
-	return db
+	return newDb
 }

@@ -1,7 +1,7 @@
 package globle
 
 import (
-	"github.com/ronnielin8862/go-practice/cmd/db/postgres/psqlConn"
+	"github.com/ronnielin8862/go-practice/cmd/db/postgres/psql"
 	"github.com/ronnielin8862/go-practice/config"
 )
 
@@ -10,8 +10,8 @@ func StartServer() {
 	//	log.Println(http.ListenAndServe("localhost:8211", nil))
 	//}()
 
-	config.LoadGlobalConfig()
+	config.InitConfig()
 
-	psqlConn.InitPsql()
+	psql.Get()
 
 }
