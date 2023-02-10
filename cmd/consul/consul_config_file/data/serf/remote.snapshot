@@ -1,0 +1,5 @@
+alive: consul-server-01.ithome 192.0.0.2:8302
+alive: consul-server-1.ithome 192.0.0.2:8302
+alive: consul-server-1.ithome 192.0.0.2:8302
+alive: consul-server-1.ithome 192.0.0.2:8302
+alive: consul-server-1.ithome 127.0.0.1:8302

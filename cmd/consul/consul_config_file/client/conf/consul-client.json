@@ -1,0 +1,16 @@
+{
+ "bind_addr": "172.20.10.2",
+ "datacenter": "ithome",
+ "data_dir": "/Users/ronnie/Library/Mobile Documents/com~apple~CloudDocs/Documents/coding/code/consul/client/data",
+ "log_level": "INFO",
+ "enable_syslog": true,
+ "enable_debug": true,
+ "node_name": "consul-client-1",
+ "server": false,
+   "service": {"name": "ithome2", "tags": ["HTTP"], "port": 8500,
+   "check": {"ttl": "10s"}},
+ "rejoin_after_leave": true,
+ "retry_join": [
+    "172.20.10.2"
+    ]
+ }
