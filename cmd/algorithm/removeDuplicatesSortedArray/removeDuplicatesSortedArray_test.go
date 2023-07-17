@@ -8,38 +8,40 @@ import (
 func Test1(t *testing.T) {
 	numbers := []int{1, 1, 2}
 	wantNum := 2
+	wantNewNums := []int{1, 2}
 
-	num := removeDuplicates(numbers)
-	check(t, num, wantNum)
+	num, newNums := removeDuplicates(numbers)
+	check(t, num, newNums, wantNum, wantNewNums)
 }
 
 func Test2(t *testing.T) {
 	numbers := []int{0, 0, 1, 1, 1, 2, 2, 3, 3, 4}
 	wantNum := 5
+	wantNewNums := []int{0, 1, 2, 3, 4}
 
-	num := removeDuplicates(numbers)
-	check(t, num, wantNum)
+	num, newNums := removeDuplicates(numbers)
+	check(t, num, newNums, wantNum, wantNewNums)
 }
 
 func Test3(t *testing.T) {
 	numbers := []int{1}
 	wantNum := 1
-	num := removeDuplicates(numbers)
+	wantNewNums := []int{1}
 
-	check(t, num, wantNum)
+	num, newNums := removeDuplicates(numbers)
+	check(t, num, newNums, wantNum, wantNewNums)
 }
 
-func Test4(t *testing.T) {
-	numbers := []int{1, 1}
-	wantNum := 1
-	num := removeDuplicates(numbers)
+func check(t *testing.T, num int, newNums []int, wantNum int, wantNewNums []int) {
+	fmt.Print("newNums: ", newNums, " num: ", num)
 
-	check(t, num, wantNum)
-}
-
-func check(t *testing.T, num int, wantNum int) {
 	if num != wantNum {
 		t.Errorf("got %v wantNum %v given", num, wantNum)
+	}
+	for i := 0; i < num; i++ {
+		if newNums[i] != wantNewNums[i] {
+			t.Errorf("got %v wantNum %v given", newNums[i], wantNewNums[i])
+		}
 	}
 }
 
@@ -52,8 +54,7 @@ func arrayContains(arr []int, num int) bool {
 	return false
 }
 
-func removeDuplicates(numbers []int) (num int) {
-	var newNums []int
+func removeDuplicates(numbers []int) (num int, newNums []int) {
 	if len(numbers) == 0 {
 		return
 	}
@@ -65,6 +66,5 @@ func removeDuplicates(numbers []int) (num int) {
 			num++
 		}
 	}
-	fmt.Println(newNums, num)
 	return
 }
